@@ -1,0 +1,169 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "G&S MEDICAL Store Website with Admin Dashboard, Seller Management & AI Assistant",
+  "requirements": [
+    {
+      "id": "REQ-2",
+      "summary": "Build professional, animated public-facing homepage with hero, about, founder profiles, medicines, sellers, contact, and footer sections",
+      "acceptanceCriteria": [
+        "Homepage displays G&S MEDICAL logo prominently with store name",
+        "Positive, professional bios for GAURAV SASVADE and SHUSHANT WAGHMARE are visible",
+        "All phone and WhatsApp numbers are correctly linked and clickable",
+        "Medicines and sellers sections load data from backend",
+        "Scroll animations and entrance transitions are present throughout",
+        "Contact section shows all specified numbers and email"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/HomePage.tsx",
+          "operation": "create",
+          "description": "Create the main public homepage component with Hero section (G&S Medical logo from frontend/public/assets/generated/gs-medical-logo.dim_512x512.png, store name, tagline, CTA button with hero-banner.dim_1920x600.png background), About Us section with warm description, Founder profiles section (CEO GAURAV SASVADE with ceo-avatar.dim_400x400.png and Co-Founder SHUSHANT WAGHMARE with cofounder-avatar.dim_400x400.png, including titles, phone numbers +91 9270556455 and +91 9156896495, WhatsApp links), dynamically loaded Medicines section, Sellers Directory, Contact section (phone +91 9766343454, WhatsApp +91 9766343454, CEO phone +91 9270556455, CEO WhatsApp +91 9270556455, Co-Founder phone +91 9156896495, Co-Founder WhatsApp +91 9156896495, email gauravsaswade@gsgroupswebstore.in), and Footer. Implement scroll-triggered fade-in and slide-up animations using Intersection Observer or animation library. Fetch medicines using getMedicine and sellers using getActiveSellers from backend interface."
+        },
+        {
+          "path": "frontend/src/components/MedicineCard.tsx",
+          "operation": "create",
+          "description": "Create a reusable medicine card component displaying name, category, description, price, stock status, image, and availability badge. Include hover effects and smooth transitions. Accept Medicine type from backend interface as props."
+        },
+        {
+          "path": "frontend/src/components/SellerCard.tsx",
+          "operation": "create",
+          "description": "Create a reusable seller card component displaying name, contact info preview, and active status badge. Include click handler to navigate to seller detail page. Accept Seller type from backend interface as props. Apply hover effects and card styling consistent with the medical theme."
+        },
+        {
+          "path": "frontend/src/components/Navigation.tsx",
+          "operation": "create",
+          "description": "Create main navigation header component with G&S MEDICAL logo (using frontend/public/assets/generated/gs-medical-logo.dim_512x512.png), store name, and navigation links to homepage sections (About, Medicines, Sellers, Contact). Include smooth scroll behavior for anchor links. Make header sticky on scroll with background transition effect. Style with medical theme colors and ensure responsive mobile menu. Display on all public pages."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Implement Admin Dashboard with login, medicine manager, seller manager, website content editor, dashboard overview, and logout",
+      "acceptanceCriteria": [
+        "'/admin' route shows login form; incorrect credentials show an error",
+        "Correct credentials grant access to the full dashboard",
+        "Admin can add, edit, and delete medicines; changes reflect on the public site",
+        "Admin can add, edit, remove, and toggle status of sellers",
+        "Admin can edit website content sections and save changes",
+        "Dashboard overview shows live counts",
+        "Logout clears session and redirects to login"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/AdminLoginPage.tsx",
+          "operation": "create",
+          "description": "Create admin login page component with email and password input fields. On submit, call adminLogin backend function with hardcoded credentials check (gauravsaswade2009@gmail.com / p1love2g). On success, store session token in localStorage and redirect to admin dashboard. On failure, display error message. Use professional form styling consistent with the medical theme."
+        },
+        {
+          "path": "frontend/src/pages/AdminDashboard.tsx",
+          "operation": "create",
+          "description": "Create main admin dashboard page with protected route guard checking for valid session token. Display overview cards with counts of total medicines, active sellers, and pending sellers fetched from backend. Include navigation tabs/links to Medicine Manager, Seller Manager, and Website Content Editor sections. Add logout button that clears session and redirects to login. Use card-based responsive layout."
+        },
+        {
+          "path": "frontend/src/components/admin/MedicineManager.tsx",
+          "operation": "create",
+          "description": "Create medicine management component with table/list view of all medicines, add new medicine form (fields: name, category, description, price, stock, imageUrl, isAvailable toggle), edit medicine modal/form, and delete confirmation dialog. Call addMedicine, updateMedicine, deleteMedicine, and getMedicine backend functions. Validate all required fields before submission. Show success/error notifications after operations."
+        },
+        {
+          "path": "frontend/src/components/admin/SellerManager.tsx",
+          "operation": "create",
+          "description": "Create seller management component with table/list view of all sellers (regardless of status), add new seller form (fields: name, email, phone, whatsapp, address, licenseNumber, status dropdown with active/inactive/pending options), edit seller modal/form, status toggle buttons, and delete confirmation dialog. Call addSeller, updateSeller, deleteSeller, and getSeller backend functions. Validate email format and required fields. Show success/error notifications."
+        },
+        {
+          "path": "frontend/src/components/admin/WebsiteContentEditor.tsx",
+          "operation": "create",
+          "description": "Create website content editor component with editable text fields for key sections (hero headline, about text, announcements) loaded from SiteContent backend store. Call getSiteContent to load existing values and updateSiteContent to save changes. Use textarea inputs with character counts. Include save button with loading state and success/error feedback. Organize fields into logical sections with clear labels."
+        },
+        {
+          "path": "frontend/src/hooks/useAuth.ts",
+          "operation": "create",
+          "description": "Create authentication hook managing admin session state using localStorage. Provide login, logout, and isAuthenticated functions. Check for valid session token on mount. Return current auth state and methods for use in protected routes and components."
+        },
+        {
+          "path": "frontend/src/components/ProtectedRoute.tsx",
+          "operation": "create",
+          "description": "Create protected route wrapper component that checks authentication status using useAuth hook. If not authenticated, redirect to /admin login page. If authenticated, render children components. Use React Router's Navigate component for redirects."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Create seller profile pages showing active sellers publicly and detail pages for individual sellers",
+      "acceptanceCriteria": [
+        "Active sellers appear on the homepage Sellers section",
+        "Clicking a seller card navigates to a detailed seller profile page",
+        "Inactive or pending sellers are hidden from public view",
+        "Admin dashboard shows all sellers including inactive/pending"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/SellerDetailPage.tsx",
+          "operation": "create",
+          "description": "Create seller detail page component accessible via '/sellers/:id' route. Fetch seller data using getSeller backend function based on URL parameter. Display comprehensive seller profile including name, contact info (phone, WhatsApp with clickable links), email, address, license number, and status badge. Show 404 or redirect if seller not found or not active (for public access). Use professional card layout with medical theme styling."
+        },
+        {
+          "path": "frontend/src/components/SellersSection.tsx",
+          "operation": "create",
+          "description": "Create sellers section component for homepage displaying grid of active seller cards. Fetch active sellers using getActiveSellers backend function. Filter to show only sellers with status 'active'. Each card should be clickable and navigate to the seller detail page. Include section heading and responsive grid layout. Show loading state while fetching and empty state if no active sellers."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Implement floating AI Assistant chatbot widget with rule-based FAQ responses and customer care escalation",
+      "acceptanceCriteria": [
+        "A floating chat bubble is visible on all public pages",
+        "Opening the widget shows a welcome message from G&S MEDICAL Assistant",
+        "The bot answers common FAQs about medicines, ordering, and contact",
+        "Unanswered queries prompt the user to call/WhatsApp +91 9766343454",
+        "Chat history is maintained while the page is open"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ChatWidget.tsx",
+          "operation": "create",
+          "description": "Create floating AI assistant chatbot widget positioned in bottom-right corner. Include chat bubble button that toggles chat window. Display welcome message from 'G&S MEDICAL Assistant' on open. Implement chat interface with message history (customer and bot messages), text input field, and send button. Maintain chat history in component state during session. Style with medical theme colors (emerald green, white, gold accents) and smooth open/close transitions."
+        },
+        {
+          "path": "frontend/src/utils/chatbot.ts",
+          "operation": "create",
+          "description": "Create rule-based chatbot response engine utility. Define FAQ patterns and responses for common queries: how to order, store location/contact info, available medicines, seller registration process. Use keyword matching and pattern recognition to identify query intent. For recognized queries, return appropriate response text. For unrecognized queries, return escalation message directing user to call/WhatsApp customer care at +91 9766343454. Export function that takes user query string and returns bot response string. Do not use external AI APIs."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Apply professional medical-grade visual theme with emerald green, white, gold palette, animations, and responsive design",
+      "acceptanceCriteria": [
+        "Consistent emerald green, white, and gold color palette throughout",
+        "Typography is clean, readable, and professional",
+        "All sections have scroll-triggered entrance animations",
+        "Layout is fully responsive on mobile, tablet, and desktop",
+        "Hover effects are present on buttons, cards, and links"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Update global styles to define CSS custom properties for the medical theme color palette (emerald green primary #047857 or similar, white #FFFFFF, gold accent #D4AF37 or similar). Add base typography styles using modern sans-serif font family (e.g., Inter, Outfit, or system fonts). Define reusable utility classes for shadows, hover transitions, and card styles. Include keyframe animations for fade-in, slide-up, and other entrance effects. Ensure all styles support the professional medical aesthetic."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Extend Tailwind configuration to include custom medical theme colors (emerald green variants, gold accent). Add custom animation utilities for scroll-triggered effects (fadeUp, fadeIn, slideIn). Configure responsive breakpoints for mobile, tablet, and desktop. Add custom box-shadow presets for card elevations. Extend font family with professional sans-serif options. Configure theme to align with the medical-grade visual design requirements."
+        },
+        {
+          "path": "frontend/src/components/AnimatedSection.tsx",
+          "operation": "create",
+          "description": "Create reusable animated section wrapper component that applies scroll-triggered entrance animations to children. Use Intersection Observer API to detect when section enters viewport. Apply fade-up or slide-in animation classes based on props. Support animation delay and duration props for staggered effects. Make animations performant and respect prefers-reduced-motion accessibility setting."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Configure React Router with all application routes: '/' for HomePage, '/sellers/:id' for SellerDetailPage, '/admin' for AdminLoginPage, '/admin/dashboard' for AdminDashboard (wrapped in ProtectedRoute). Add ChatWidget component to render on all public routes (HomePage and SellerDetailPage). Ensure router setup supports navigation and URL parameter parsing. Import and register all newly created page components."
+        }
+      ]
+    }
+  ]
+}

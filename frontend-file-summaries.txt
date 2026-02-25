@@ -1,0 +1,9 @@
+{
+  "frontend/src/pages/AdminLoginPage.tsx": "Admin login page with email/password form, credential validation against hardcoded values (gauravsaswade2009@gmail.com / p1love2g), session storage via useAuth hook, and professional G&S MEDICAL branded design with emerald/gold theme.",
+  "frontend/src/pages/AdminDashboard.tsx": "Protected admin dashboard with sidebar navigation, overview stats, quick actions, and tab-based sections for Medicine Manager, Seller Manager, and Website Content Editor, with logout functionality.",
+  "frontend/src/pages/SellerDetailPage.tsx": "Public seller detail page that uses `useParams({ from: '/sellers/$id' })` matching the corrected direct-root route registration; renders full seller profile with contact info, license details, navigation, footer, and an inline ChatWidget.",
+  "frontend/src/components/admin/MedicineManager.tsx": "Admin component for full CRUD management of medicines with table view, add/edit dialog form, delete confirmation, and ID tracking via siteContent backend store.",
+  "frontend/src/components/admin/SellerManager.tsx": "Admin component for full CRUD management of sellers with table view, status toggle via dropdown, add/edit dialog form, delete confirmation, and ID tracking via siteContent backend store.",
+  "frontend/src/components/admin/WebsiteContentEditor.tsx": "Admin component for editing website text content (hero headline, about text, announcements, etc.) with individual save buttons per field, character counters, and real-time sync to backend siteContent store.",
+  "frontend/src/App.tsx": "Main app component with TanStack Router setup; `sellerDetailRoute` is now a direct child of `rootRoute` (path `/sellers/$id`) so its route ID resolves correctly, while the public layout with ChatWidget still wraps the homepage."
+}

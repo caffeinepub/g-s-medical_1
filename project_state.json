@@ -1,0 +1,105 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Medical store website for G&S MEDICAL with admin dashboard, seller management, AI assistant, and contact/WhatsApp integration.",
+  "architectural_notes": [
+    "Admin login: email=gauravsaswade2009@gmail.com, password=p1love2g (hardcoded for demo)",
+    "Store email: gauravsaswade@gsgroupswebstore.in | CEO: Gaurav Sasvade | Co-founder: Shushant Waghmare",
+    "Contact numbers — Customer care: +91 9766343454, CEO: +91 9270556455, Co-founder: +91 9156896495 (same for WhatsApp)"
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- G&S MEDICAL store logo — circular emblem with a green medical cross, 'G&S' monogram in bold gold letters, clean white background, professional healthcare style (gs-medical-logo.dim_512x512.png)\n- Hero banner background — abstract medical theme with subtle green gradient, soft bokeh light effects, clean white overlay area, wide format (hero-banner.dim_1920x600.png)\n- CEO profile portrait placeholder — professional headshot silhouette illustration with suit, warm neutral tone, medical/business context (ceo-avatar.dim_400x400.png)\n- Co-founder profile portrait placeholder — professional headshot silhouette illustration with suit, warm neutral tone, business context (cofounder-avatar.dim_400x400.png)",
+  "existing_features": [
+    {
+      "id": "feature-build-a-professional-animated-public-facing-homepage-for-g-s-medical-with-the-following-sections-1-hero-full-width-banner-with-the-g-s-medical-logo-store-name-g-s-medical-tagline-about-trusted-healthcare-and-a-cta-button-2-about-us-warm-positive-description-of-the-store-emphasizing-quality-trust-reliability-and-community-health-3-founder-co-founder-profiles-cards-for-ceo-gaurav-sasvade-and-co-founder-director-shushant-waghmare-with-flattering-professional-bios-titles-phone-numbers-and-whatsapp-links-4-medicines-products-section-dynamically-populated-from-backend-data-5-seller-directory-list-of-active-seller-profiles-6-contact-customer-care-section-with-phone-91-9766343454-whatsapp-91-9766343454-ceo-phone-91-9270556455-ceo-whatsapp-91-9270556455-co-founder-phone-91-9156896495-co-founder-whatsapp-91-9156896495-and-store-email-gauravsaswade-gsgroupswebstore-in-7-footer-with-store-name-tagline-and-key-links-use-smooth-scroll-animations-fade-ins-and-entrance-transitions-throughout",
+      "title": "Build a professional, animated public-facing homepage for G&S MEDICAL with the following sections: (1) Hero — full-width banner with the G&S Medical logo, store name 'G&S MEDICAL', tagline about trusted healthcare, and a CTA button; (2) About Us — warm, positive description of the store emphasizing quality, trust, reliability, and community health; (3) Founder & Co-Founder profiles — cards for CEO GAURAV SASVADE and Co-Founder & Director SHUSHANT WAGHMARE with flattering professional bios, titles, phone numbers, and WhatsApp links; (4) Medicines/Products section — dynamically populated from backend data; (5) Seller Directory — list of active seller profiles; (6) Contact & Customer Care section with phone (+91 9766343454), WhatsApp (+91 9766343454), CEO phone (+91 9270556455), CEO WhatsApp (+91 9270556455), Co-Founder phone (+91 9156896495), Co-Founder WhatsApp (+91 9156896495), and store email gauravsaswade@gsgroupswebstore.in; (7) Footer with store name, tagline, and key links. Use smooth scroll animations, fade-ins, and entrance transitions throughout.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-an-admin-dashboard-accessible-via-a-admin-route-protected-by-a-login-screen-accepting-email-gauravsaswade2009-gmail-com-and-password-p1love2g-the-dashboard-must-include-1-medicine-manager-add-edit-delete-medicines-with-fields-for-name-category-description-price-stock-image-url-availability-toggle-2-seller-manager-view-all-seller-profiles-add-new-sellers-edit-seller-details-toggle-status-active-inactive-pending-and-remove-sellers-3-website-content-editor-edit-key-website-sections-hero-headline-about-text-announcements-stored-in-sitecontent-4-dashboard-overview-counts-of-total-medicines-active-sellers-pending-sellers-5-logout-button-the-dashboard-must-be-fully-functional-from-any-device-browser-no-local-only-restrictions",
+      "title": "Implement an Admin Dashboard accessible via a '/admin' route, protected by a login screen accepting email 'gauravsaswade2009@gmail.com' and password 'p1love2g'. The dashboard must include: (1) Medicine Manager — add, edit, delete medicines with fields for name, category, description, price, stock, image URL, availability toggle; (2) Seller Manager — view all seller profiles, add new sellers, edit seller details, toggle status (active/inactive/pending), and remove sellers; (3) Website Content Editor — edit key website sections (hero headline, about text, announcements) stored in SiteContent; (4) Dashboard overview — counts of total medicines, active sellers, pending sellers; (5) Logout button. The dashboard must be fully functional from any device/browser (no local-only restrictions).",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-seller-profile-pages-on-the-public-website-each-seller-has-a-profile-card-visible-on-the-sellers-section-of-the-homepage-and-a-dedicated-seller-detail-page-e-g-sellers-id-seller-profiles-display-name-contact-info-address-license-number-and-status-badge-only-sellers-with-active-status-are-shown-publicly-admin-can-manage-all-sellers-regardless-of-status-from-the-dashboard",
+      "title": "Create seller profile pages on the public website. Each seller has a profile card visible on the Sellers section of the homepage and a dedicated seller detail page (e.g., '/sellers/:id'). Seller profiles display name, contact info, address, license number, and status badge. Only sellers with 'active' status are shown publicly. Admin can manage all sellers regardless of status from the dashboard.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-floating-ai-assistant-chatbot-widget-on-all-public-pages-the-widget-opens-as-a-chat-bubble-in-the-bottom-right-corner-it-responds-to-common-customer-queries-about-medicines-store-hours-ordering-and-contact-information-using-a-rule-based-response-engine-no-external-ai-api-it-should-handle-faqs-such-as-how-to-order-store-location-contact-available-medicines-seller-registration-and-escalate-to-customer-care-91-9766343454-for-unanswered-queries-chat-history-is-preserved-during-the-session",
+      "title": "Implement a floating AI Assistant chatbot widget on all public pages. The widget opens as a chat bubble in the bottom-right corner. It responds to common customer queries about medicines, store hours, ordering, and contact information using a rule-based response engine (no external AI API). It should handle FAQs such as: how to order, store location/contact, available medicines, seller registration, and escalate to customer care (+91 9766343454) for unanswered queries. Chat history is preserved during the session.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-professional-medical-grade-visual-theme-across-the-entire-website-clean-white-and-deep-emerald-green-primary-palette-with-gold-accent-highlights-medical-cross-motifs-modern-sans-serif-typography-card-based-layouts-with-subtle-shadows-smooth-hover-transitions-and-a-trustworthy-authoritative-aesthetic-animate-section-entrances-with-fade-up-and-slide-in-effects-on-scroll-ensure-the-design-is-fully-responsive-for-mobile-tablet-and-desktop",
+      "title": "Apply a professional medical-grade visual theme across the entire website: clean white and deep emerald green primary palette with gold accent highlights, medical cross motifs, modern sans-serif typography, card-based layouts with subtle shadows, smooth hover transitions, and a trustworthy, authoritative aesthetic. Animate section entrances with fade-up and slide-in effects on scroll. Ensure the design is fully responsive for mobile, tablet, and desktop.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Professional animated homepage with G&S MEDICAL branding, logo, store info, and positive content about the founders",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Admin dashboard with login (gauravsaswade2009@gmail.com / p1love2g), accessible from anywhere, allowing medicine management, website editing, and seller management",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Seller profiles on website with admin ability to add/edit/manage sellers from dashboard",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "AI assistant chatbot for customer queries",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Contact section with customer care, CEO, and co-founder phone and WhatsApp numbers",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Custom logo for G&S MEDICAL displayed on the website with store name",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Create the backend data models and actor with the following entities: (1) Medicines — id, name, category, description, price, stock, imageUrl, isAvailable; (2) Sellers — id, name, email, phone, whatsapp, address, licenseNumber, status (active/inactive/pending), joinedAt; (3) SiteContent — key/value store for editable website sections (hero text, about text, announcements, etc.); (4) AdminCredentials — hardcoded check for email 'gauravsaswade2009@gmail.com' and password 'p1love2g' returning a session token; (5) ChatMessages — id, customerQuery, botResponse, timestamp. Expose CRUD endpoints for all entities and an admin login function.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "G&S MEDICAL",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
