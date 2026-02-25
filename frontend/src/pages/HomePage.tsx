@@ -74,7 +74,7 @@ function HeroSection() {
 
         {/* Title */}
         <div className="animate-fade-up" style={{ animationDelay: '0.2s' }}>
-          <h1 className="font-display text-5xl md:text-7xl font-bold text-white mb-4 leading-tight">
+          <h1 className="font-display text-5xl md:text-7xl font-bold text-black mb-4 leading-tight">
             G&S{' '}
             <span className="text-gradient-gold">MEDICAL</span>
           </h1>
@@ -118,9 +118,9 @@ function HeroSection() {
             <Button
               size="lg"
               variant="outline"
-              className="border-white/40 text-white hover:bg-white/10 px-8 py-3 text-base rounded-full w-full sm:w-auto"
+              className="bg-pink-100 border-pink-200 text-pink-800 hover:bg-pink-200 px-8 py-3 text-base rounded-full w-full sm:w-auto"
             >
-              <SiWhatsapp size={18} className="mr-2 text-green-400" />
+              <SiWhatsapp size={18} className="mr-2 text-green-600" />
               WhatsApp Us
             </Button>
           </a>
@@ -362,56 +362,46 @@ Mr. Waghmare's dedication to building a robust and transparent medical distribut
                     </div>
                     <div>
                       <h3 className="font-display text-xl font-bold">{member.name}</h3>
-                      <p className="text-white/80 text-sm font-medium">{member.title}</p>
-                      <div className="flex gap-2 mt-2">
-                        <a
-                          href={`tel:${member.phone}`}
-                          className="flex items-center gap-1 bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-full text-xs transition-colors"
-                        >
-                          <Phone size={11} />
-                          {member.phone}
-                        </a>
-                      </div>
+                      <p className="text-white/80 text-sm">{member.title}</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Bio */}
+                {/* Body */}
                 <div className="p-6">
-                  <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line mb-4">
-                    {member.bio}
-                  </p>
-
                   {/* Achievements */}
                   <div className="flex flex-wrap gap-2 mb-4">
                     {member.achievements.map((achievement) => (
                       <span
                         key={achievement}
-                        className="flex items-center gap-1 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-medium border border-emerald-200"
+                        className="flex items-center gap-1 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full text-xs font-medium border border-emerald-100"
                       >
-                        <Star size={10} className="text-gold-500" />
+                        <Star size={10} className="fill-current" />
                         {achievement}
                       </span>
                     ))}
                   </div>
 
-                  {/* Contact buttons */}
-                  <div className="flex gap-3 pt-4 border-t border-emerald-50">
-                    <a
-                      href={`tel:${member.phone}`}
-                      className="flex-1 flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 py-2.5 rounded-xl text-sm font-medium transition-colors border border-emerald-200"
-                    >
-                      <Phone size={14} />
-                      Call
+                  {/* Bio */}
+                  <div className="text-sm text-muted-foreground leading-relaxed space-y-3 mb-6">
+                    {member.bio.split('\n\n').map((paragraph, i) => (
+                      <p key={i}>{paragraph}</p>
+                    ))}
+                  </div>
+
+                  {/* Contact */}
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <a href={`tel:${member.phone}`} className="flex-1">
+                      <Button variant="outline" size="sm" className="w-full border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-full">
+                        <Phone size={14} className="mr-1.5" />
+                        {member.phone}
+                      </Button>
                     </a>
-                    <a
-                      href={`https://wa.me/${member.whatsapp.replace(/\D/g, '')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 py-2.5 rounded-xl text-sm font-medium transition-colors border border-green-200"
-                    >
-                      <SiWhatsapp size={14} />
-                      WhatsApp
+                    <a href={`https://wa.me/${member.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex-1">
+                      <Button variant="outline" size="sm" className="w-full border-green-200 text-green-700 hover:bg-green-50 rounded-full">
+                        <SiWhatsapp size={14} className="mr-1.5" />
+                        WhatsApp
+                      </Button>
                     </a>
                   </div>
                 </div>
@@ -424,219 +414,217 @@ Mr. Waghmare's dedication to building a robust and transparent medical distribut
   );
 }
 
-function WhyChooseSection() {
-  const reasons = [
-    { icon: '🏆', title: 'Industry Leaders', desc: 'Recognized as a trusted name in the medical distribution industry.' },
-    { icon: '💯', title: '100% Authentic', desc: 'Every medicine is sourced directly from licensed manufacturers.' },
-    { icon: '🚀', title: 'Fast Service', desc: 'Quick order processing and reliable delivery to your doorstep.' },
-    { icon: '💰', title: 'Best Prices', desc: 'Competitive pricing without compromising on quality.' },
-    { icon: '🤝', title: 'Trusted Network', desc: 'A growing network of verified sellers and distributors.' },
-    { icon: '📞', title: '24/7 Support', desc: 'Our customer care team is always ready to assist you.' },
-  ];
-
+function SellersPageSection() {
   return (
-    <section className="section-padding bg-gradient-to-b from-emerald-900 to-emerald-800 text-white relative overflow-hidden">
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-10 left-10 w-40 h-40 border-2 border-white rounded-full" />
-        <div className="absolute bottom-10 right-10 w-60 h-60 border-2 border-white rounded-full" />
-        <div className="absolute top-1/2 left-1/2 w-80 h-80 border border-white rounded-full -translate-x-1/2 -translate-y-1/2" />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section id="sellers" className="section-padding bg-gradient-to-b from-white to-emerald-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedSection animation="fade-up" className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-white/10 text-gold-300 px-4 py-1.5 rounded-full text-sm font-medium mb-4 border border-white/20">
-            <TrendingUp size={14} />
-            Why Choose Us
+          <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-sm font-medium mb-4">
+            <Users size={14} />
+            Our Network
           </div>
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
-            Why G&S MEDICAL is{' '}
-            <span className="text-gradient-gold">Your Best Choice</span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-emerald-900 mb-4">
+            Trusted Seller Partners
           </h2>
-          <p className="text-emerald-200 max-w-2xl mx-auto text-lg">
-            We don't just sell medicines — we deliver trust, quality, and care with every order.
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+            Connect with our verified and licensed medical sellers across India for genuine medicines and healthcare products.
           </p>
         </AnimatedSection>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-          {reasons.map((reason, index) => (
-            <AnimatedSection key={reason.title} animation="fade-up" delay={index * 80}>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:-translate-y-1 text-center">
-                <div className="text-4xl mb-3">{reason.icon}</div>
-                <h3 className="font-semibold text-white mb-2">{reason.title}</h3>
-                <p className="text-emerald-200 text-sm leading-relaxed">{reason.desc}</p>
-              </div>
-            </AnimatedSection>
-          ))}
-        </div>
+        <SellersSection />
       </div>
     </section>
   );
 }
 
 function ContactSection() {
-  const contacts = [
-    {
-      category: 'Customer Care',
-      icon: HeartPulse,
-      color: 'bg-emerald-600',
-      phone: '+91 9766343454',
-      whatsapp: '+91 9766343454',
-      description: 'For orders, queries, and general assistance',
-    },
-    {
-      category: 'CEO - Gaurav Sasvade',
-      icon: Award,
-      color: 'bg-gold-500',
-      phone: '+91 9270556455',
-      whatsapp: '+91 9270556455',
-      description: 'For business partnerships and escalations',
-    },
-    {
-      category: 'Co-Founder - Shushant Waghmare',
-      icon: Users,
-      color: 'bg-emerald-700',
-      phone: '+91 9156896495',
-      whatsapp: '+91 9156896495',
-      description: 'For seller registration and operations',
-    },
-  ];
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 3000);
+    setFormData({ name: '', email: '', phone: '', message: '' });
+  };
 
   return (
-    <section id="contact" className="section-padding bg-gradient-to-b from-white to-emerald-50">
+    <section id="contact" className="section-padding bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedSection animation="fade-up" className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-sm font-medium mb-4">
-            <Phone size={14} />
+            <MessageCircle size={14} />
             Get In Touch
           </div>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-emerald-900 mb-4">
-            We're Here to Help You
+            Contact Us
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            Reach out to us through any of the channels below. Our team is always ready to assist you.
+            Have questions or need assistance? We're here to help you with all your healthcare needs.
           </p>
         </AnimatedSection>
 
-        {/* Contact cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
-          {contacts.map((contact, index) => (
-            <AnimatedSection key={contact.category} animation="fade-up" delay={index * 100}>
-              <div className="bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 p-6 border border-emerald-100">
-                <div className={`w-12 h-12 ${contact.color} rounded-xl flex items-center justify-center mb-4 shadow-emerald`}>
-                  <contact.icon size={22} className="text-white" />
+        <div className="grid lg:grid-cols-2 gap-12">
+          {/* Contact Info */}
+          <AnimatedSection animation="slide-left">
+            <div className="space-y-6">
+              {[
+                {
+                  icon: Phone,
+                  title: 'Phone',
+                  lines: ['+91 9766343454', '+91 9270556455', '+91 9156896495'],
+                  color: 'bg-emerald-100 text-emerald-700',
+                },
+                {
+                  icon: SiWhatsapp,
+                  title: 'WhatsApp',
+                  lines: ['+91 9766343454'],
+                  color: 'bg-green-100 text-green-700',
+                  link: 'https://wa.me/919766343454',
+                },
+                {
+                  icon: Mail,
+                  title: 'Email',
+                  lines: ['gauravsaswade2009@gmail.com'],
+                  color: 'bg-blue-100 text-blue-700',
+                },
+                {
+                  icon: MapPin,
+                  title: 'Location',
+                  lines: ['India'],
+                  color: 'bg-red-100 text-red-700',
+                },
+              ].map((item) => (
+                <div key={item.title} className="flex items-start gap-4">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${item.color}`}>
+                    <item.icon size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-emerald-900 mb-1">{item.title}</h3>
+                    {item.lines.map((line) => (
+                      <p key={line} className="text-muted-foreground text-sm">
+                        {item.link ? (
+                          <a href={item.link} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-700 transition-colors">
+                            {line}
+                          </a>
+                        ) : line}
+                      </p>
+                    ))}
+                  </div>
                 </div>
-                <h3 className="font-semibold text-emerald-900 mb-1">{contact.category}</h3>
-                <p className="text-xs text-muted-foreground mb-4">{contact.description}</p>
+              ))}
+            </div>
+          </AnimatedSection>
 
-                <div className="space-y-2">
-                  <a
-                    href={`tel:${contact.phone}`}
-                    className="flex items-center gap-2 text-sm text-emerald-700 hover:text-emerald-900 transition-colors group"
-                  >
-                    <div className="w-7 h-7 bg-emerald-50 rounded-full flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
-                      <Phone size={13} className="text-emerald-600" />
-                    </div>
-                    <span className="font-medium">{contact.phone}</span>
-                  </a>
-                  <a
-                    href={`https://wa.me/${contact.whatsapp.replace(/\D/g, '')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-green-700 hover:text-green-900 transition-colors group"
-                  >
-                    <div className="w-7 h-7 bg-green-50 rounded-full flex items-center justify-center group-hover:bg-green-100 transition-colors">
-                      <SiWhatsapp size={13} className="text-green-600" />
-                    </div>
-                    <span className="font-medium">WhatsApp</span>
-                  </a>
+          {/* Contact Form */}
+          <AnimatedSection animation="slide-right">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-emerald-900 mb-1.5">Name</label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                    className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
+                    placeholder="Your name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-emerald-900 mb-1.5">Email</label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                    className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
+                    placeholder="your@email.com"
+                  />
                 </div>
               </div>
-            </AnimatedSection>
-          ))}
-        </div>
-
-        {/* Email & additional info */}
-        <AnimatedSection animation="fade-up">
-          <div className="bg-gradient-to-r from-emerald-700 to-emerald-800 rounded-3xl p-8 text-white text-center relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-0 left-1/4 w-32 h-32 bg-white rounded-full -translate-y-1/2" />
-              <div className="absolute bottom-0 right-1/4 w-24 h-24 bg-gold-400 rounded-full translate-y-1/2" />
-            </div>
-            <div className="relative z-10">
-              <Mail size={32} className="mx-auto mb-3 text-gold-300" />
-              <h3 className="font-display text-xl font-bold mb-2">Email Us</h3>
-              <a
-                href="mailto:gauravsaswade@gsgroupswebstore.in"
-                className="text-emerald-200 hover:text-white transition-colors text-lg font-medium"
+              <div>
+                <label className="block text-sm font-medium text-emerald-900 mb-1.5">Phone</label>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
+                  placeholder="+91 XXXXX XXXXX"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-emerald-900 mb-1.5">Message</label>
+                <textarea
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  required
+                  rows={4}
+                  className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm resize-none"
+                  placeholder="How can we help you?"
+                />
+              </div>
+              <Button
+                type="submit"
+                className="w-full btn-gold rounded-xl py-3"
+                disabled={submitted}
               >
-                gauravsaswade@gsgroupswebstore.in
-              </a>
-              <p className="text-emerald-300 text-sm mt-2">
-                We respond to all emails within 24 hours
-              </p>
-            </div>
-          </div>
-        </AnimatedSection>
+                {submitted ? (
+                  <>
+                    <CheckCircle size={16} className="mr-2" />
+                    Message Sent!
+                  </>
+                ) : (
+                  <>
+                    <MessageCircle size={16} className="mr-2" />
+                    Send Message
+                  </>
+                )}
+              </Button>
+            </form>
+          </AnimatedSection>
+        </div>
       </div>
     </section>
   );
 }
 
 function Footer() {
-  const currentYear = new Date().getFullYear();
-  const appId = encodeURIComponent(window.location.hostname || 'gs-medical');
-
-  const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <footer className="bg-gradient-medical text-white">
+    <footer className="bg-emerald-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div className="grid md:grid-cols-3 gap-8 mb-8">
           {/* Brand */}
-          <div className="lg:col-span-2">
+          <div>
             <div className="flex items-center gap-3 mb-4">
-              <img
-                src="/assets/generated/gs-medical-logo.dim_512x512.png"
-                alt="G&S Medical Logo"
-                className="w-12 h-12 rounded-full border-2 border-gold-400"
-              />
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gold-400">
+                <img
+                  src="/assets/generated/gs-medical-logo.dim_512x512.png"
+                  alt="G&S Medical"
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <div>
-                <h3 className="font-display text-xl font-bold text-white">G&S MEDICAL</h3>
-                <p className="text-emerald-300 text-xs">Your Health, Our Priority</p>
+                <div className="font-display font-bold text-lg leading-tight">G&S MEDICAL</div>
+                <div className="text-emerald-400 text-xs">Your Health, Our Priority</div>
               </div>
             </div>
-            <p className="text-emerald-300 text-sm leading-relaxed mb-4 max-w-sm">
-              G&S MEDICAL is your trusted partner for quality medicines and healthcare products. We are committed to making healthcare accessible, affordable, and reliable for everyone.
+            <p className="text-emerald-300 text-sm leading-relaxed">
+              Trusted healthcare partner providing genuine medicines and quality healthcare solutions across India.
             </p>
-            <div className="flex items-center gap-2 text-sm text-emerald-300">
-              <Mail size={14} />
-              <a href="mailto:gauravsaswade@gsgroupswebstore.in" className="hover:text-white transition-colors">
-                gauravsaswade@gsgroupswebstore.in
-              </a>
-            </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Quick Links</h4>
+            <h4 className="font-semibold text-gold-300 mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              {[
-                { label: 'Home', id: 'hero' },
-                { label: 'About Us', id: 'about' },
-                { label: 'Medicines', id: 'medicines' },
-                { label: 'Our Sellers', id: 'sellers' },
-                { label: 'Our Team', id: 'team' },
-                { label: 'Contact', id: 'contact' },
-              ].map((link) => (
-                <li key={link.id}>
-                  <button
-                    onClick={() => scrollToSection(link.id)}
-                    className="text-emerald-300 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block"
+              {['Home', 'About', 'Medicines', 'Sellers', 'Team', 'Contact'].map((link) => (
+                <li key={link}>
+                  <a
+                    href={`#${link.toLowerCase()}`}
+                    className="text-emerald-300 hover:text-white text-sm transition-colors"
                   >
-                    → {link.label}
-                  </button>
+                    {link}
+                  </a>
                 </li>
               ))}
             </ul>
@@ -644,45 +632,35 @@ function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Contact Us</h4>
-            <ul className="space-y-3">
-              <li>
-                <p className="text-emerald-400 text-xs mb-1">Customer Care</p>
-                <a href="tel:+919766343454" className="text-emerald-200 hover:text-white text-sm transition-colors flex items-center gap-1.5">
-                  <Phone size={12} />
-                  +91 9766343454
+            <h4 className="font-semibold text-gold-300 mb-4">Contact</h4>
+            <div className="space-y-2 text-sm text-emerald-300">
+              <div className="flex items-center gap-2">
+                <Phone size={14} />
+                <span>+91 9766343454</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <SiWhatsapp size={14} />
+                <a href="https://wa.me/919766343454" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                  WhatsApp Us
                 </a>
-              </li>
-              <li>
-                <p className="text-emerald-400 text-xs mb-1">CEO</p>
-                <a href="tel:+919270556455" className="text-emerald-200 hover:text-white text-sm transition-colors flex items-center gap-1.5">
-                  <Phone size={12} />
-                  +91 9270556455
-                </a>
-              </li>
-              <li>
-                <p className="text-emerald-400 text-xs mb-1">Co-Founder</p>
-                <a href="tel:+919156896495" className="text-emerald-200 hover:text-white text-sm transition-colors flex items-center gap-1.5">
-                  <Phone size={12} />
-                  +91 9156896495
-                </a>
-              </li>
-            </ul>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail size={14} />
+                <span>gauravsaswade2009@gmail.com</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="border-t border-emerald-700 pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-emerald-400">
-          <p>© {currentYear} G&S MEDICAL. All rights reserved.</p>
+        <div className="border-t border-emerald-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-emerald-400">
+          <p>© {new Date().getFullYear()} G&S MEDICAL. All rights reserved.</p>
           <p className="flex items-center gap-1">
-            Built with{' '}
-            <Heart size={14} className="text-red-400 fill-red-400 mx-0.5" />{' '}
-            using{' '}
+            Built with <Heart size={14} className="text-red-400 fill-current" /> using{' '}
             <a
-              href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${appId}`}
+              href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(typeof window !== 'undefined' ? window.location.hostname : 'unknown-app')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gold-400 hover:text-gold-300 transition-colors font-medium"
+              className="text-gold-300 hover:text-gold-200 transition-colors"
             >
               caffeine.ai
             </a>
@@ -697,13 +675,14 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <HeroSection />
-      <AboutSection />
-      <MedicinesSection />
-      <SellersSection />
-      <TeamSection />
-      <WhyChooseSection />
-      <ContactSection />
+      <main>
+        <HeroSection />
+        <AboutSection />
+        <MedicinesSection />
+        <SellersPageSection />
+        <TeamSection />
+        <ContactSection />
+      </main>
       <Footer />
     </div>
   );

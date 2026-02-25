@@ -1,37 +1,35 @@
 {
   "kind": "build_request",
-  "title": "Hide admin login shortcut from public website",
-  "projectName": "G&S MEDICAL",
+  "title": "Change hero CTA button color to white-pink",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-19",
-      "text": "In the public-facing website (Navigation.tsx and any other publicly visible components such as the homepage footer or any navigation links), remove or hide any visible shortcut, link, or button that directs regular visitors to the admin login page ('/admin'). The '/admin' route itself must remain functional and accessible by direct URL, but no clickable shortcut to it should be visible to public users.",
+      "id": "REQ-21",
+      "text": "In frontend/src/pages/HomePage.tsx, locate the CTA button element in the hero section identified by the XPath /html[1]/body[1]/div[1]/div[1]/main[1]/section[1]/div[3]/div[5]/a[1]/button[1] and change its background color from white to a white-pink tone (e.g., bg-pink-100 or #fff0f5). Ensure the button text remains legible against the new background.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-7"
+          "msg-1"
         ],
         "quotes": [
-          "Hide admin login in shortcut from website"
+          "Change color white to whitepink"
         ]
       },
       "acceptanceCriteria": [
-        "No link, button, or text directing users to '/admin' or the admin login page is visible anywhere on the public-facing website (homepage, navigation bar, footer, etc.).",
-        "Navigating directly to '/admin' via the browser address bar still works and shows the admin login page.",
-        "The admin dashboard remains fully functional for authenticated admins.",
-        "No other navigation links or public content are affected by this change."
+        "The CTA button in the hero section of HomePage.tsx has a white-pink background color (e.g., bg-pink-100, #fff0f5, or similar soft pinkish-white tone) instead of white.",
+        "Button text is clearly legible against the new white-pink background.",
+        "No other buttons or elements outside the specified XPath target are changed."
       ]
     }
   ],
   "constraints": [
-    "Do not remove or disable the '/admin' route — only hide the visible shortcut/link from the public UI.",
-    "Do not modify any immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui."
+    "Only the button element at XPath /html[1]/body[1]/div[1]/div[1]/main[1]/section[1]/div[3]/div[5]/a[1]/button[1] should be modified.",
+    "Do not alter any other elements, colors, or styles on the page."
   ],
   "nonGoals": [
-    "Adding authentication or access control to the /admin route itself.",
-    "Changing any admin dashboard functionality.",
-    "Modifying the backend."
+    "Changing any other white elements on the homepage or site-wide.",
+    "Modifying button text, size, shape, or any property other than background color.",
+    "Updating the backend."
   ],
   "imageRequirements": {
     "required": [],

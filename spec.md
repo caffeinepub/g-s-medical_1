@@ -1,9 +1,9 @@
 # Specification
 
 ## Summary
-**Goal:** Hide any visible admin login shortcut or link from the public-facing website while keeping the `/admin` route accessible via direct URL.
+**Goal:** Change the hero section CTA button background color from white to a white-pink tone.
 
 **Planned changes:**
-- Remove or hide any link, button, or text pointing to `/admin` from `Navigation.tsx` and any other publicly visible components (e.g., homepage, footer, navigation links).
+- Update the CTA button in the hero section of `HomePage.tsx` to use a white-pink background color (e.g., `bg-pink-100` / `#fff0f5`) instead of white.
 
-**User-visible outcome:** Regular visitors no longer see any shortcut or link to the admin login page on the public website. Admins can still access the admin panel by navigating directly to `/admin` in the browser.
+**User-visible outcome:** The hero section CTA button displays a soft white-pink background while keeping the button text clearly legible.

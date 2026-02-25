@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 13,
+  "projectStateVersion": 17,
   "summary": "Medical store website for G&S MEDICAL with admin dashboard, seller management, AI assistant, contact/WhatsApp integration, and seller/customer authentication (signup & login).",
   "architectural_notes": [
     "Admin login: email=gauravsaswade2009@gmail.com, password=p1love2g (hardcoded for demo)",
@@ -137,6 +137,22 @@
         "REQ-19"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-in-frontend-src-pages-homepage-tsx-locate-the-main-hero-section-s-primary-h1-heading-element-the-first-h1-inside-the-third-content-div-of-the-first-section-and-change-its-text-color-from-white-to-black",
+      "title": "In frontend/src/pages/HomePage.tsx, locate the main hero section's primary <h1> heading element (the first h1 inside the third content div of the first section) and change its text color from white to black.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-frontend-src-pages-homepage-tsx-locate-the-cta-button-element-in-the-hero-section-identified-by-the-xpath-html-1-body-1-div-1-div-1-main-1-section-1-div-3-div-5-a-1-button-1-and-change-its-background-color-from-white-to-a-white-pink-tone-e-g-bg-pink-100-or-fff0f5-ensure-the-button-text-remains-legible-against-the-new-background",
+      "title": "In frontend/src/pages/HomePage.tsx, locate the CTA button element in the hero section identified by the XPath /html[1]/body[1]/div[1]/div[1]/main[1]/section[1]/div[3]/div[5]/a[1]/button[1] and change its background color from white to a white-pink tone (e.g., bg-pink-100 or #fff0f5). Ensure the button text remains legible against the new background.",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -227,6 +243,18 @@
     {
       "id": "AR-14",
       "summary": "Hide the admin login shortcut/link from the public-facing website so it is not visible to regular visitors",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Change white color to black (unspecified element — likely a text or background color change)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Change a white color element to white-pink (pinkish white tone)",
       "reqIds": [],
       "status": "pending"
     }

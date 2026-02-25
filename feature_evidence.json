@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-in-the-public-facing-website-navigation-tsx-and-any-other-publicly-visible-components-such-as-the-homepage-footer-or-any-navigation-links-remove-or-hide-any-visible-shortcut-link-or-button-that-directs-regular-visitors-to-the-admin-login-page-admin-the-admin-route-itself-must-remain-functional-and-accessible-by-direct-url-but-no-clickable-shortcut-to-it-should-be-visible-to-public-users",
-      "featureTitle": "In the public-facing website (Navigation.tsx and any other publicly visible components such as the homepage footer or any navigation links), remove or hide any visible shortcut, link, or button that directs regular visitors to the admin login page ('/admin'). The '/admin' route itself must remain functional and accessible by direct URL, but no clickable shortcut to it should be visible to public users.",
+      "featureId": "feature-in-frontend-src-pages-homepage-tsx-locate-the-cta-button-element-in-the-hero-section-identified-by-the-xpath-html-1-body-1-div-1-div-1-main-1-section-1-div-3-div-5-a-1-button-1-and-change-its-background-color-from-white-to-a-white-pink-tone-e-g-bg-pink-100-or-fff0f5-ensure-the-button-text-remains-legible-against-the-new-background",
+      "featureTitle": "In frontend/src/pages/HomePage.tsx, locate the CTA button element in the hero section identified by the XPath /html[1]/body[1]/div[1]/div[1]/main[1]/section[1]/div[3]/div[5]/a[1]/button[1] and change its background color from white to a white-pink tone (e.g., bg-pink-100 or #fff0f5). Ensure the button text remains legible against the new background.",
       "files": [
-        "frontend/src/components/Navigation.tsx"
+        "frontend/src/pages/HomePage.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -17,7 +17,7 @@
         "user-approval@3.0.0"
       ],
       "testIds": [
-        "REQ-19"
+        "REQ-21"
       ],
       "confidence": "high"
     }
