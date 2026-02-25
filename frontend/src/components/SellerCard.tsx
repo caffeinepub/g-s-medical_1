@@ -1,10 +1,10 @@
-import { Seller } from '../backend';
+import { SellerAccount } from '../backend';
 import { Badge } from '@/components/ui/badge';
 import { Phone, MapPin, Award, ChevronRight } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 
 interface SellerCardProps {
-  seller: Seller;
+  seller: SellerAccount;
 }
 
 const statusConfig = {

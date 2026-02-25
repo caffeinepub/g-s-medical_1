@@ -89,6 +89,20 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface UserApprovalInfo {
+    status: ApprovalStatus;
+    principal: Principal;
+}
+export interface Customer {
+    id: string;
+    name: string;
+    joinedAt: Time;
+    email: string;
+    sessionToken?: string;
+    passwordHash: string;
+    phone: string;
+}
+export type Time = bigint;
 export interface Medicine {
     id: string;
     name: string;
@@ -101,7 +115,7 @@ export interface Medicine {
 }
 export interface ChatMessage {
     id: string;
-    timestamp: bigint;
+    timestamp: Time;
     botResponse: string;
     customerQuery: string;
 }
@@ -109,35 +123,93 @@ export interface SiteContent {
     key: string;
     value: string;
 }
-export interface Seller {
+export interface SellerAccount {
     id: string;
-    status: string;
+    status: SellerStatus;
     name: string;
-    joinedAt: bigint;
+    joinedAt: Time;
     whatsapp: string;
     email: string;
     address: string;
+    sessionToken?: string;
     licenseNumber: string;
+    passwordHash: string;
     phone: string;
 }
+export interface UserProfile {
+    name: string;
+    role: string;
+}
+export enum ApprovalStatus {
+    pending = "pending",
+    approved = "approved",
+    rejected = "rejected"
+}
+export enum RegisterCustomerResult {
+    ok = "ok",
+    emailAlreadyExists = "emailAlreadyExists",
+    internalError = "internalError"
+}
+export enum SellerStatus {
+    active = "active",
+    pending = "pending",
+    inactive = "inactive"
+}
+export enum UserRole {
+    admin = "admin",
+    user = "user",
+    guest = "guest"
+}
 export interface backendInterface {
+    _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     addChatMessage(message: ChatMessage): Promise<void>;
     addMedicine(medicine: Medicine): Promise<void>;
-    addSeller(seller: Seller): Promise<void>;
-    adminLogin(email: string, password: string): Promise<boolean>;
+    assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
+    assignRole(user: Principal, role: UserRole): Promise<void>;
+    customerLogin(email: string, password: string): Promise<string | null>;
     deleteMedicine(id: string): Promise<void>;
     deleteSeller(id: string): Promise<void>;
-    getActiveSellers(): Promise<Array<Seller>>;
+    getActiveSellers(): Promise<Array<SellerAccount>>;
+    getCallerUserProfile(): Promise<UserProfile | null>;
+    getCallerUserRole(): Promise<UserRole>;
     getChatMessage(id: string): Promise<ChatMessage>;
+    getCustomerByToken(token: string): Promise<Customer | null>;
     getMedicine(id: string): Promise<Medicine>;
-    getSeller(id: string): Promise<Seller>;
+    getSellerByToken(token: string): Promise<SellerAccount | null>;
     getSiteContent(key: string): Promise<SiteContent>;
+    getUserProfile(user: Principal): Promise<UserProfile | null>;
+    isCallerAdmin(): Promise<boolean>;
+    isCallerApproved(): Promise<boolean>;
+    listApprovals(): Promise<Array<UserApprovalInfo>>;
+    logoutCustomer(token: string): Promise<boolean>;
+    logoutSeller(token: string): Promise<boolean>;
+    registerCustomer(name: string, email: string, password: string, phone: string): Promise<RegisterCustomerResult>;
+    registerSeller(name: string, email: string, password: string, phone: string, whatsapp: string, address: string, licenseNumber: string): Promise<RegisterSellerResult>;
+    requestApproval(): Promise<void>;
+    saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    sellerLogin(email: string, password: string): Promise<string | null>;
+    setApproval(user: Principal, status: ApprovalStatus): Promise<void>;
     updateMedicine(id: string, updatedMedicine: Medicine): Promise<void>;
-    updateSeller(id: string, updatedSeller: Seller): Promise<void>;
+    updateSeller(id: string, updatedSeller: SellerAccount): Promise<void>;
     updateSiteContent(content: SiteContent): Promise<void>;
 }
+import type { ApprovalStatus as _ApprovalStatus, Customer as _Customer, RegisterCustomerResult as _RegisterCustomerResult, RegisterSellerResult as _RegisterSellerResult, SellerAccount as _SellerAccount, SellerStatus as _SellerStatus, Time as _Time, UserApprovalInfo as _UserApprovalInfo, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
+    async _initializeAccessControlWithSecret(arg0: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor._initializeAccessControlWithSecret(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor._initializeAccessControlWithSecret(arg0);
+            return result;
+        }
+    }
     async addChatMessage(arg0: ChatMessage): Promise<void> {
         if (this.processError) {
             try {
@@ -166,32 +238,46 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async addSeller(arg0: Seller): Promise<void> {
+    async assignCallerUserRole(arg0: Principal, arg1: UserRole): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.addSeller(arg0);
+                const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n1(this._uploadFile, this._downloadFile, arg1));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.addSeller(arg0);
+            const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n1(this._uploadFile, this._downloadFile, arg1));
             return result;
         }
     }
-    async adminLogin(arg0: string, arg1: string): Promise<boolean> {
+    async assignRole(arg0: Principal, arg1: UserRole): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.adminLogin(arg0, arg1);
+                const result = await this.actor.assignRole(arg0, to_candid_UserRole_n1(this._uploadFile, this._downloadFile, arg1));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.adminLogin(arg0, arg1);
+            const result = await this.actor.assignRole(arg0, to_candid_UserRole_n1(this._uploadFile, this._downloadFile, arg1));
             return result;
+        }
+    }
+    async customerLogin(arg0: string, arg1: string): Promise<string | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.customerLogin(arg0, arg1);
+                return from_candid_opt_n3(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.customerLogin(arg0, arg1);
+            return from_candid_opt_n3(this._uploadFile, this._downloadFile, result);
         }
     }
     async deleteMedicine(arg0: string): Promise<void> {
@@ -222,18 +308,46 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getActiveSellers(): Promise<Array<Seller>> {
+    async getActiveSellers(): Promise<Array<SellerAccount>> {
         if (this.processError) {
             try {
                 const result = await this.actor.getActiveSellers();
-                return result;
+                return from_candid_vec_n4(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getActiveSellers();
-            return result;
+            return from_candid_vec_n4(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getCallerUserProfile(): Promise<UserProfile | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCallerUserProfile();
+                return from_candid_opt_n9(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCallerUserProfile();
+            return from_candid_opt_n9(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getCallerUserRole(): Promise<UserRole> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCallerUserRole();
+                return from_candid_UserRole_n10(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCallerUserRole();
+            return from_candid_UserRole_n10(this._uploadFile, this._downloadFile, result);
         }
     }
     async getChatMessage(arg0: string): Promise<ChatMessage> {
@@ -250,6 +364,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async getCustomerByToken(arg0: string): Promise<Customer | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCustomerByToken(arg0);
+                return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCustomerByToken(arg0);
+            return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async getMedicine(arg0: string): Promise<Medicine> {
         if (this.processError) {
             try {
@@ -264,18 +392,18 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getSeller(arg0: string): Promise<Seller> {
+    async getSellerByToken(arg0: string): Promise<SellerAccount | null> {
         if (this.processError) {
             try {
-                const result = await this.actor.getSeller(arg0);
-                return result;
+                const result = await this.actor.getSellerByToken(arg0);
+                return from_candid_opt_n15(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getSeller(arg0);
-            return result;
+            const result = await this.actor.getSellerByToken(arg0);
+            return from_candid_opt_n15(this._uploadFile, this._downloadFile, result);
         }
     }
     async getSiteContent(arg0: string): Promise<SiteContent> {
@@ -289,6 +417,174 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.getSiteContent(arg0);
+            return result;
+        }
+    }
+    async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getUserProfile(arg0);
+                return from_candid_opt_n9(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getUserProfile(arg0);
+            return from_candid_opt_n9(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async isCallerAdmin(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isCallerAdmin();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.isCallerAdmin();
+            return result;
+        }
+    }
+    async isCallerApproved(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isCallerApproved();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.isCallerApproved();
+            return result;
+        }
+    }
+    async listApprovals(): Promise<Array<UserApprovalInfo>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.listApprovals();
+                return from_candid_vec_n16(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.listApprovals();
+            return from_candid_vec_n16(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async logoutCustomer(arg0: string): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.logoutCustomer(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.logoutCustomer(arg0);
+            return result;
+        }
+    }
+    async logoutSeller(arg0: string): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.logoutSeller(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.logoutSeller(arg0);
+            return result;
+        }
+    }
+    async registerCustomer(arg0: string, arg1: string, arg2: string, arg3: string): Promise<RegisterCustomerResult> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.registerCustomer(arg0, arg1, arg2, arg3);
+                return from_candid_RegisterCustomerResult_n21(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.registerCustomer(arg0, arg1, arg2, arg3);
+            return from_candid_RegisterCustomerResult_n21(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async registerSeller(arg0: string, arg1: string, arg2: string, arg3: string, arg4: string, arg5: string, arg6: string): Promise<RegisterSellerResult> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.registerSeller(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+                return from_candid_RegisterSellerResult_n23(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.registerSeller(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+            return from_candid_RegisterSellerResult_n23(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async requestApproval(): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.requestApproval();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.requestApproval();
+            return result;
+        }
+    }
+    async saveCallerUserProfile(arg0: UserProfile): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.saveCallerUserProfile(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.saveCallerUserProfile(arg0);
+            return result;
+        }
+    }
+    async sellerLogin(arg0: string, arg1: string): Promise<string | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.sellerLogin(arg0, arg1);
+                return from_candid_opt_n3(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.sellerLogin(arg0, arg1);
+            return from_candid_opt_n3(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async setApproval(arg0: Principal, arg1: ApprovalStatus): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.setApproval(arg0, to_candid_ApprovalStatus_n24(this._uploadFile, this._downloadFile, arg1));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.setApproval(arg0, to_candid_ApprovalStatus_n24(this._uploadFile, this._downloadFile, arg1));
             return result;
         }
     }
@@ -306,17 +602,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async updateSeller(arg0: string, arg1: Seller): Promise<void> {
+    async updateSeller(arg0: string, arg1: SellerAccount): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.updateSeller(arg0, arg1);
+                const result = await this.actor.updateSeller(arg0, to_candid_SellerAccount_n26(this._uploadFile, this._downloadFile, arg1));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.updateSeller(arg0, arg1);
+            const result = await this.actor.updateSeller(arg0, to_candid_SellerAccount_n26(this._uploadFile, this._downloadFile, arg1));
             return result;
         }
     }
@@ -334,6 +630,258 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+}
+function from_candid_ApprovalStatus_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _ApprovalStatus): ApprovalStatus {
+    return from_candid_variant_n20(_uploadFile, _downloadFile, value);
+}
+function from_candid_Customer_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Customer): Customer {
+    return from_candid_record_n14(_uploadFile, _downloadFile, value);
+}
+function from_candid_RegisterCustomerResult_n21(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _RegisterCustomerResult): RegisterCustomerResult {
+    return from_candid_variant_n22(_uploadFile, _downloadFile, value);
+}
+function from_candid_RegisterSellerResult_n23(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _RegisterSellerResult): RegisterSellerResult {
+    return from_candid_variant_n22(_uploadFile, _downloadFile, value);
+}
+function from_candid_SellerAccount_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _SellerAccount): SellerAccount {
+    return from_candid_record_n6(_uploadFile, _downloadFile, value);
+}
+function from_candid_SellerStatus_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _SellerStatus): SellerStatus {
+    return from_candid_variant_n8(_uploadFile, _downloadFile, value);
+}
+function from_candid_UserApprovalInfo_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserApprovalInfo): UserApprovalInfo {
+    return from_candid_record_n18(_uploadFile, _downloadFile, value);
+}
+function from_candid_UserRole_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
+    return from_candid_variant_n11(_uploadFile, _downloadFile, value);
+}
+function from_candid_opt_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Customer]): Customer | null {
+    return value.length === 0 ? null : from_candid_Customer_n13(_uploadFile, _downloadFile, value[0]);
+}
+function from_candid_opt_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_SellerAccount]): SellerAccount | null {
+    return value.length === 0 ? null : from_candid_SellerAccount_n5(_uploadFile, _downloadFile, value[0]);
+}
+function from_candid_opt_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_record_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    id: string;
+    name: string;
+    joinedAt: _Time;
+    email: string;
+    sessionToken: [] | [string];
+    passwordHash: string;
+    phone: string;
+}): {
+    id: string;
+    name: string;
+    joinedAt: Time;
+    email: string;
+    sessionToken?: string;
+    passwordHash: string;
+    phone: string;
+} {
+    return {
+        id: value.id,
+        name: value.name,
+        joinedAt: value.joinedAt,
+        email: value.email,
+        sessionToken: record_opt_to_undefined(from_candid_opt_n3(_uploadFile, _downloadFile, value.sessionToken)),
+        passwordHash: value.passwordHash,
+        phone: value.phone
+    };
+}
+function from_candid_record_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    status: _ApprovalStatus;
+    principal: Principal;
+}): {
+    status: ApprovalStatus;
+    principal: Principal;
+} {
+    return {
+        status: from_candid_ApprovalStatus_n19(_uploadFile, _downloadFile, value.status),
+        principal: value.principal
+    };
+}
+function from_candid_record_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    id: string;
+    status: _SellerStatus;
+    name: string;
+    joinedAt: _Time;
+    whatsapp: string;
+    email: string;
+    address: string;
+    sessionToken: [] | [string];
+    licenseNumber: string;
+    passwordHash: string;
+    phone: string;
+}): {
+    id: string;
+    status: SellerStatus;
+    name: string;
+    joinedAt: Time;
+    whatsapp: string;
+    email: string;
+    address: string;
+    sessionToken?: string;
+    licenseNumber: string;
+    passwordHash: string;
+    phone: string;
+} {
+    return {
+        id: value.id,
+        status: from_candid_SellerStatus_n7(_uploadFile, _downloadFile, value.status),
+        name: value.name,
+        joinedAt: value.joinedAt,
+        whatsapp: value.whatsapp,
+        email: value.email,
+        address: value.address,
+        sessionToken: record_opt_to_undefined(from_candid_opt_n3(_uploadFile, _downloadFile, value.sessionToken)),
+        licenseNumber: value.licenseNumber,
+        passwordHash: value.passwordHash,
+        phone: value.phone
+    };
+}
+function from_candid_variant_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    admin: null;
+} | {
+    user: null;
+} | {
+    guest: null;
+}): UserRole {
+    return "admin" in value ? UserRole.admin : "user" in value ? UserRole.user : "guest" in value ? UserRole.guest : value;
+}
+function from_candid_variant_n20(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    pending: null;
+} | {
+    approved: null;
+} | {
+    rejected: null;
+}): ApprovalStatus {
+    return "pending" in value ? ApprovalStatus.pending : "approved" in value ? ApprovalStatus.approved : "rejected" in value ? ApprovalStatus.rejected : value;
+}
+function from_candid_variant_n22(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    ok: null;
+} | {
+    emailAlreadyExists: null;
+} | {
+    internalError: null;
+}): RegisterCustomerResult {
+    return "ok" in value ? RegisterCustomerResult.ok : "emailAlreadyExists" in value ? RegisterCustomerResult.emailAlreadyExists : "internalError" in value ? RegisterCustomerResult.internalError : value;
+}
+function from_candid_variant_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    active: null;
+} | {
+    pending: null;
+} | {
+    inactive: null;
+}): SellerStatus {
+    return "active" in value ? SellerStatus.active : "pending" in value ? SellerStatus.pending : "inactive" in value ? SellerStatus.inactive : value;
+}
+function from_candid_vec_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_UserApprovalInfo>): Array<UserApprovalInfo> {
+    return value.map((x)=>from_candid_UserApprovalInfo_n17(_uploadFile, _downloadFile, x));
+}
+function from_candid_vec_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_SellerAccount>): Array<SellerAccount> {
+    return value.map((x)=>from_candid_SellerAccount_n5(_uploadFile, _downloadFile, x));
+}
+function to_candid_ApprovalStatus_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ApprovalStatus): _ApprovalStatus {
+    return to_candid_variant_n25(_uploadFile, _downloadFile, value);
+}
+function to_candid_SellerAccount_n26(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: SellerAccount): _SellerAccount {
+    return to_candid_record_n27(_uploadFile, _downloadFile, value);
+}
+function to_candid_SellerStatus_n28(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: SellerStatus): _SellerStatus {
+    return to_candid_variant_n29(_uploadFile, _downloadFile, value);
+}
+function to_candid_UserRole_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
+    return to_candid_variant_n2(_uploadFile, _downloadFile, value);
+}
+function to_candid_record_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    id: string;
+    status: SellerStatus;
+    name: string;
+    joinedAt: Time;
+    whatsapp: string;
+    email: string;
+    address: string;
+    sessionToken?: string;
+    licenseNumber: string;
+    passwordHash: string;
+    phone: string;
+}): {
+    id: string;
+    status: _SellerStatus;
+    name: string;
+    joinedAt: _Time;
+    whatsapp: string;
+    email: string;
+    address: string;
+    sessionToken: [] | [string];
+    licenseNumber: string;
+    passwordHash: string;
+    phone: string;
+} {
+    return {
+        id: value.id,
+        status: to_candid_SellerStatus_n28(_uploadFile, _downloadFile, value.status),
+        name: value.name,
+        joinedAt: value.joinedAt,
+        whatsapp: value.whatsapp,
+        email: value.email,
+        address: value.address,
+        sessionToken: value.sessionToken ? candid_some(value.sessionToken) : candid_none(),
+        licenseNumber: value.licenseNumber,
+        passwordHash: value.passwordHash,
+        phone: value.phone
+    };
+}
+function to_candid_variant_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): {
+    admin: null;
+} | {
+    user: null;
+} | {
+    guest: null;
+} {
+    return value == UserRole.admin ? {
+        admin: null
+    } : value == UserRole.user ? {
+        user: null
+    } : value == UserRole.guest ? {
+        guest: null
+    } : value;
+}
+function to_candid_variant_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ApprovalStatus): {
+    pending: null;
+} | {
+    approved: null;
+} | {
+    rejected: null;
+} {
+    return value == ApprovalStatus.pending ? {
+        pending: null
+    } : value == ApprovalStatus.approved ? {
+        approved: null
+    } : value == ApprovalStatus.rejected ? {
+        rejected: null
+    } : value;
+}
+function to_candid_variant_n29(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: SellerStatus): {
+    active: null;
+} | {
+    pending: null;
+} | {
+    inactive: null;
+} {
+    return value == SellerStatus.active ? {
+        active: null
+    } : value == SellerStatus.pending ? {
+        pending: null
+    } : value == SellerStatus.inactive ? {
+        inactive: null
+    } : value;
 }
 export interface CreateActorOptions {
     agent?: Agent;

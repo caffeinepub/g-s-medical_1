@@ -8,19 +8,20 @@ import { useGetActiveSellers } from '../hooks/useQueries';
 import { Button } from '@/components/ui/button';
 import {
   LayoutDashboard, Pill, Users, FileEdit, LogOut,
-  Menu, X, HeartPulse, TrendingUp, ShieldCheck, Bell
+  Menu, HeartPulse, TrendingUp, ShieldCheck, Bell, Clock
 } from 'lucide-react';
 
 type ActiveTab = 'overview' | 'medicines' | 'sellers' | 'content';
 
-function StatCard({ icon: Icon, label, value, color }: {
+function StatCard({ icon: Icon, label, value, color, highlight }: {
   icon: React.ElementType;
   label: string;
   value: string | number;
   color: string;
+  highlight?: boolean;
 }) {
   return (
-    <div className="bg-white rounded-2xl p-6 border border-emerald-100 shadow-card hover:shadow-card-hover transition-all duration-300">
+    <div className={`bg-white rounded-2xl p-6 border shadow-card hover:shadow-card-hover transition-all duration-300 ${highlight ? 'border-amber-300 ring-1 ring-amber-200' : 'border-emerald-100'}`}>
       <div className="flex items-center justify-between mb-4">
         <div className={`w-12 h-12 ${color} rounded-xl flex items-center justify-center shadow-sm`}>
           <Icon size={22} className="text-white" />
@@ -39,7 +40,9 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { data: activeSellers = [] } = useGetActiveSellers();
+  const { data: allSellers = [] } = useGetActiveSellers();
+  const activeSellers = allSellers.filter((s) => s.status === 'active');
+  const pendingSellers = allSellers.filter((s) => s.status === 'pending');
 
   const handleLogout = () => {
     logout();
@@ -84,6 +87,11 @@ export default function AdminDashboard() {
           >
             <item.icon size={18} />
             {item.label}
+            {item.id === 'sellers' && pendingSellers.length > 0 && (
+              <span className="ml-auto bg-amber-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                {pendingSellers.length}
+              </span>
+            )}
           </button>
         ))}
       </nav>
@@ -147,6 +155,15 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            {pendingSellers.length > 0 && (
+              <button
+                onClick={() => setActiveTab('sellers')}
+                className="hidden sm:flex items-center gap-2 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200 hover:bg-amber-100 transition-colors"
+              >
+                <Clock size={14} className="text-amber-600" />
+                <span className="text-xs text-amber-700 font-medium">{pendingSellers.length} Pending</span>
+              </button>
+            )}
             <div className="hidden sm:flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
               <ShieldCheck size={14} className="text-emerald-600" />
               <span className="text-xs text-emerald-700 font-medium">Admin</span>
@@ -179,12 +196,19 @@ export default function AdminDashboard() {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard
                   icon={Users}
                   label="Active Sellers"
                   value={activeSellers.length}
                   color="bg-emerald-600"
+                />
+                <StatCard
+                  icon={Clock}
+                  label="Pending Approvals"
+                  value={pendingSellers.length}
+                  color="bg-amber-500"
+                  highlight={pendingSellers.length > 0}
                 />
                 <StatCard
                   icon={Pill}
@@ -200,6 +224,30 @@ export default function AdminDashboard() {
                 />
               </div>
 
+              {/* Pending sellers alert */}
+              {pendingSellers.length > 0 && (
+                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-start gap-4">
+                  <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Clock size={18} className="text-amber-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-amber-900 mb-1">
+                      {pendingSellers.length} Seller{pendingSellers.length > 1 ? 's' : ''} Awaiting Approval
+                    </h3>
+                    <p className="text-sm text-amber-700 mb-3">
+                      New sellers have registered and are waiting for your approval to start selling on the platform.
+                    </p>
+                    <Button
+                      onClick={() => setActiveTab('sellers')}
+                      size="sm"
+                      className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs"
+                    >
+                      Review Sellers
+                    </Button>
+                  </div>
+                </div>
+              )}
+
               {/* Quick actions */}
               <div className="bg-white rounded-2xl p-6 border border-emerald-100 shadow-card">
                 <h3 className="font-semibold text-emerald-900 mb-4 flex items-center gap-2">
@@ -209,7 +257,7 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {[
                     { label: 'Add Medicine', tab: 'medicines' as ActiveTab, icon: Pill, color: 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' },
-                    { label: 'Add Seller', tab: 'sellers' as ActiveTab, icon: Users, color: 'bg-gold-100 text-gold-700 border-gold-200 hover:bg-gold-200' },
+                    { label: 'Manage Sellers', tab: 'sellers' as ActiveTab, icon: Users, color: 'bg-gold-100 text-gold-700 border-gold-200 hover:bg-gold-200' },
                     { label: 'Edit Content', tab: 'content' as ActiveTab, icon: FileEdit, color: 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' },
                   ].map((action) => (
                     <button

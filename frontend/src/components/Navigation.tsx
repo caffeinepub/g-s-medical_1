@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from '@tanstack/react-router';
-import { Menu, X, Phone, Mail } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
+import { Menu, X, Phone, Mail, User, Store } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useCustomerAuth } from '../hooks/useCustomerAuth';
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { isAuthenticated: isCustomerLoggedIn, logout: customerLogout } = useCustomerAuth();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -76,8 +78,9 @@ export default function Navigation() {
               />
             </div>
             <div className="flex flex-col leading-tight">
-              <span className={`font-display font-bold text-lg leading-none transition-colors ${isScrolled ? 'text-emerald-800' : 'text-white'}`}>
-                G&S MEDICAL
+              <span className="font-display font-bold text-lg leading-none">
+                <span className="text-black">G&S</span>
+                <span className={`transition-colors ${isScrolled ? 'text-emerald-800' : 'text-black'}`}> MEDICAL</span>
               </span>
               <span className={`text-xs font-medium transition-colors ${isScrolled ? 'text-gold-600' : 'text-gold-300'}`}>
                 Your Health, Our Priority
@@ -100,18 +103,64 @@ export default function Navigation() {
             ))}
           </div>
 
-          {/* Admin button */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* Action buttons */}
+          <div className="hidden md:flex items-center gap-2">
+            {/* Customer auth buttons */}
+            {isCustomerLoggedIn ? (
+              <Button
+                onClick={() => { customerLogout(); }}
+                size="sm"
+                variant="ghost"
+                className={`text-xs font-semibold transition-all ${
+                  isScrolled
+                    ? 'text-emerald-700 hover:bg-emerald-50'
+                    : 'text-white/90 hover:bg-white/10'
+                }`}
+              >
+                <User size={13} className="mr-1.5" />
+                Logout
+              </Button>
+            ) : (
+              <>
+                <Button
+                  onClick={() => navigate({ to: '/customer/login' })}
+                  size="sm"
+                  variant="ghost"
+                  className={`text-xs font-semibold transition-all ${
+                    isScrolled
+                      ? 'text-emerald-700 hover:bg-emerald-50'
+                      : 'text-white/90 hover:bg-white/10'
+                  }`}
+                >
+                  <User size={13} className="mr-1.5" />
+                  Login
+                </Button>
+                <Button
+                  onClick={() => navigate({ to: '/customer/signup' })}
+                  size="sm"
+                  className={`text-xs font-semibold transition-all ${
+                    isScrolled
+                      ? 'bg-gold-500 hover:bg-gold-600 text-white'
+                      : 'bg-gold-400/90 hover:bg-gold-400 text-emerald-900'
+                  }`}
+                >
+                  Sign Up
+                </Button>
+              </>
+            )}
+            {/* Seller portal */}
             <Button
-              onClick={() => navigate({ to: '/admin' })}
+              onClick={() => navigate({ to: '/seller/login' })}
               size="sm"
+              variant="outline"
               className={`text-xs font-semibold transition-all ${
                 isScrolled
-                  ? 'bg-emerald-700 hover:bg-emerald-800 text-white'
-                  : 'bg-white/20 hover:bg-white/30 text-white border border-white/30'
+                  ? 'border-emerald-300 text-emerald-700 hover:bg-emerald-50'
+                  : 'border-white/30 text-white hover:bg-white/10'
               }`}
             >
-              Admin Login
+              <Store size={13} className="mr-1.5" />
+              Sell
             </Button>
           </div>
 
@@ -140,13 +189,45 @@ export default function Navigation() {
                 {link.label}
               </button>
             ))}
-            <div className="pt-2 border-t border-emerald-100">
+            <div className="pt-2 border-t border-emerald-100 space-y-2">
+              {isCustomerLoggedIn ? (
+                <Button
+                  onClick={() => { customerLogout(); setIsMobileMenuOpen(false); }}
+                  size="sm"
+                  variant="outline"
+                  className="w-full border-emerald-200 text-emerald-700"
+                >
+                  <User size={13} className="mr-1.5" />
+                  Customer Logout
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    onClick={() => { navigate({ to: '/customer/login' }); setIsMobileMenuOpen(false); }}
+                    size="sm"
+                    variant="outline"
+                    className="w-full border-emerald-200 text-emerald-700"
+                  >
+                    <User size={13} className="mr-1.5" />
+                    Customer Login
+                  </Button>
+                  <Button
+                    onClick={() => { navigate({ to: '/customer/signup' }); setIsMobileMenuOpen(false); }}
+                    size="sm"
+                    className="w-full bg-gold-500 hover:bg-gold-600 text-white"
+                  >
+                    Customer Sign Up
+                  </Button>
+                </>
+              )}
               <Button
-                onClick={() => { navigate({ to: '/admin' }); setIsMobileMenuOpen(false); }}
+                onClick={() => { navigate({ to: '/seller/login' }); setIsMobileMenuOpen(false); }}
                 size="sm"
-                className="w-full bg-emerald-700 hover:bg-emerald-800 text-white"
+                variant="outline"
+                className="w-full border-emerald-300 text-emerald-700"
               >
-                Admin Login
+                <Store size={13} className="mr-1.5" />
+                Seller Portal
               </Button>
             </div>
           </div>

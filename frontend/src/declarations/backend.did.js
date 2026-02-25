@@ -8,9 +8,10 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const Time = IDL.Int;
 export const ChatMessage = IDL.Record({
   'id' : IDL.Text,
-  'timestamp' : IDL.Nat,
+  'timestamp' : Time,
   'botResponse' : IDL.Text,
   'customerQuery' : IDL.Text,
 });
@@ -24,42 +25,117 @@ export const Medicine = IDL.Record({
   'category' : IDL.Text,
   'price' : IDL.Nat,
 });
-export const Seller = IDL.Record({
+export const UserRole = IDL.Variant({
+  'admin' : IDL.Null,
+  'user' : IDL.Null,
+  'guest' : IDL.Null,
+});
+export const SellerStatus = IDL.Variant({
+  'active' : IDL.Null,
+  'pending' : IDL.Null,
+  'inactive' : IDL.Null,
+});
+export const SellerAccount = IDL.Record({
   'id' : IDL.Text,
-  'status' : IDL.Text,
+  'status' : SellerStatus,
   'name' : IDL.Text,
-  'joinedAt' : IDL.Nat,
+  'joinedAt' : Time,
   'whatsapp' : IDL.Text,
   'email' : IDL.Text,
   'address' : IDL.Text,
+  'sessionToken' : IDL.Opt(IDL.Text),
   'licenseNumber' : IDL.Text,
+  'passwordHash' : IDL.Text,
+  'phone' : IDL.Text,
+});
+export const UserProfile = IDL.Record({ 'name' : IDL.Text, 'role' : IDL.Text });
+export const Customer = IDL.Record({
+  'id' : IDL.Text,
+  'name' : IDL.Text,
+  'joinedAt' : Time,
+  'email' : IDL.Text,
+  'sessionToken' : IDL.Opt(IDL.Text),
+  'passwordHash' : IDL.Text,
   'phone' : IDL.Text,
 });
 export const SiteContent = IDL.Record({ 'key' : IDL.Text, 'value' : IDL.Text });
+export const ApprovalStatus = IDL.Variant({
+  'pending' : IDL.Null,
+  'approved' : IDL.Null,
+  'rejected' : IDL.Null,
+});
+export const UserApprovalInfo = IDL.Record({
+  'status' : ApprovalStatus,
+  'principal' : IDL.Principal,
+});
+export const RegisterCustomerResult = IDL.Variant({
+  'ok' : IDL.Null,
+  'emailAlreadyExists' : IDL.Null,
+  'internalError' : IDL.Null,
+});
+export const RegisterSellerResult = IDL.Variant({
+  'ok' : IDL.Null,
+  'emailAlreadyExists' : IDL.Null,
+  'internalError' : IDL.Null,
+});
 
 export const idlService = IDL.Service({
+  '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'addChatMessage' : IDL.Func([ChatMessage], [], []),
   'addMedicine' : IDL.Func([Medicine], [], []),
-  'addSeller' : IDL.Func([Seller], [], []),
-  'adminLogin' : IDL.Func([IDL.Text, IDL.Text], [IDL.Bool], []),
+  'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'assignRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'customerLogin' : IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(IDL.Text)], []),
   'deleteMedicine' : IDL.Func([IDL.Text], [], []),
   'deleteSeller' : IDL.Func([IDL.Text], [], []),
-  'getActiveSellers' : IDL.Func([], [IDL.Vec(Seller)], ['query']),
+  'getActiveSellers' : IDL.Func([], [IDL.Vec(SellerAccount)], ['query']),
+  'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+  'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getChatMessage' : IDL.Func([IDL.Text], [ChatMessage], ['query']),
+  'getCustomerByToken' : IDL.Func([IDL.Text], [IDL.Opt(Customer)], ['query']),
   'getMedicine' : IDL.Func([IDL.Text], [Medicine], ['query']),
-  'getSeller' : IDL.Func([IDL.Text], [Seller], ['query']),
+  'getSellerByToken' : IDL.Func(
+      [IDL.Text],
+      [IDL.Opt(SellerAccount)],
+      ['query'],
+    ),
   'getSiteContent' : IDL.Func([IDL.Text], [SiteContent], ['query']),
+  'getUserProfile' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Opt(UserProfile)],
+      ['query'],
+    ),
+  'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'isCallerApproved' : IDL.Func([], [IDL.Bool], ['query']),
+  'listApprovals' : IDL.Func([], [IDL.Vec(UserApprovalInfo)], ['query']),
+  'logoutCustomer' : IDL.Func([IDL.Text], [IDL.Bool], []),
+  'logoutSeller' : IDL.Func([IDL.Text], [IDL.Bool], []),
+  'registerCustomer' : IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Text, IDL.Text],
+      [RegisterCustomerResult],
+      [],
+    ),
+  'registerSeller' : IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
+      [RegisterSellerResult],
+      [],
+    ),
+  'requestApproval' : IDL.Func([], [], []),
+  'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'sellerLogin' : IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(IDL.Text)], []),
+  'setApproval' : IDL.Func([IDL.Principal, ApprovalStatus], [], []),
   'updateMedicine' : IDL.Func([IDL.Text, Medicine], [], []),
-  'updateSeller' : IDL.Func([IDL.Text, Seller], [], []),
+  'updateSeller' : IDL.Func([IDL.Text, SellerAccount], [], []),
   'updateSiteContent' : IDL.Func([SiteContent], [], []),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const Time = IDL.Int;
   const ChatMessage = IDL.Record({
     'id' : IDL.Text,
-    'timestamp' : IDL.Nat,
+    'timestamp' : Time,
     'botResponse' : IDL.Text,
     'customerQuery' : IDL.Text,
   });
@@ -73,33 +149,107 @@ export const idlFactory = ({ IDL }) => {
     'category' : IDL.Text,
     'price' : IDL.Nat,
   });
-  const Seller = IDL.Record({
+  const UserRole = IDL.Variant({
+    'admin' : IDL.Null,
+    'user' : IDL.Null,
+    'guest' : IDL.Null,
+  });
+  const SellerStatus = IDL.Variant({
+    'active' : IDL.Null,
+    'pending' : IDL.Null,
+    'inactive' : IDL.Null,
+  });
+  const SellerAccount = IDL.Record({
     'id' : IDL.Text,
-    'status' : IDL.Text,
+    'status' : SellerStatus,
     'name' : IDL.Text,
-    'joinedAt' : IDL.Nat,
+    'joinedAt' : Time,
     'whatsapp' : IDL.Text,
     'email' : IDL.Text,
     'address' : IDL.Text,
+    'sessionToken' : IDL.Opt(IDL.Text),
     'licenseNumber' : IDL.Text,
+    'passwordHash' : IDL.Text,
+    'phone' : IDL.Text,
+  });
+  const UserProfile = IDL.Record({ 'name' : IDL.Text, 'role' : IDL.Text });
+  const Customer = IDL.Record({
+    'id' : IDL.Text,
+    'name' : IDL.Text,
+    'joinedAt' : Time,
+    'email' : IDL.Text,
+    'sessionToken' : IDL.Opt(IDL.Text),
+    'passwordHash' : IDL.Text,
     'phone' : IDL.Text,
   });
   const SiteContent = IDL.Record({ 'key' : IDL.Text, 'value' : IDL.Text });
+  const ApprovalStatus = IDL.Variant({
+    'pending' : IDL.Null,
+    'approved' : IDL.Null,
+    'rejected' : IDL.Null,
+  });
+  const UserApprovalInfo = IDL.Record({
+    'status' : ApprovalStatus,
+    'principal' : IDL.Principal,
+  });
+  const RegisterCustomerResult = IDL.Variant({
+    'ok' : IDL.Null,
+    'emailAlreadyExists' : IDL.Null,
+    'internalError' : IDL.Null,
+  });
+  const RegisterSellerResult = IDL.Variant({
+    'ok' : IDL.Null,
+    'emailAlreadyExists' : IDL.Null,
+    'internalError' : IDL.Null,
+  });
   
   return IDL.Service({
+    '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'addChatMessage' : IDL.Func([ChatMessage], [], []),
     'addMedicine' : IDL.Func([Medicine], [], []),
-    'addSeller' : IDL.Func([Seller], [], []),
-    'adminLogin' : IDL.Func([IDL.Text, IDL.Text], [IDL.Bool], []),
+    'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'assignRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'customerLogin' : IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(IDL.Text)], []),
     'deleteMedicine' : IDL.Func([IDL.Text], [], []),
     'deleteSeller' : IDL.Func([IDL.Text], [], []),
-    'getActiveSellers' : IDL.Func([], [IDL.Vec(Seller)], ['query']),
+    'getActiveSellers' : IDL.Func([], [IDL.Vec(SellerAccount)], ['query']),
+    'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+    'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getChatMessage' : IDL.Func([IDL.Text], [ChatMessage], ['query']),
+    'getCustomerByToken' : IDL.Func([IDL.Text], [IDL.Opt(Customer)], ['query']),
     'getMedicine' : IDL.Func([IDL.Text], [Medicine], ['query']),
-    'getSeller' : IDL.Func([IDL.Text], [Seller], ['query']),
+    'getSellerByToken' : IDL.Func(
+        [IDL.Text],
+        [IDL.Opt(SellerAccount)],
+        ['query'],
+      ),
     'getSiteContent' : IDL.Func([IDL.Text], [SiteContent], ['query']),
+    'getUserProfile' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(UserProfile)],
+        ['query'],
+      ),
+    'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'isCallerApproved' : IDL.Func([], [IDL.Bool], ['query']),
+    'listApprovals' : IDL.Func([], [IDL.Vec(UserApprovalInfo)], ['query']),
+    'logoutCustomer' : IDL.Func([IDL.Text], [IDL.Bool], []),
+    'logoutSeller' : IDL.Func([IDL.Text], [IDL.Bool], []),
+    'registerCustomer' : IDL.Func(
+        [IDL.Text, IDL.Text, IDL.Text, IDL.Text],
+        [RegisterCustomerResult],
+        [],
+      ),
+    'registerSeller' : IDL.Func(
+        [IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
+        [RegisterSellerResult],
+        [],
+      ),
+    'requestApproval' : IDL.Func([], [], []),
+    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'sellerLogin' : IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(IDL.Text)], []),
+    'setApproval' : IDL.Func([IDL.Principal, ApprovalStatus], [], []),
     'updateMedicine' : IDL.Func([IDL.Text, Medicine], [], []),
-    'updateSeller' : IDL.Func([IDL.Text, Seller], [], []),
+    'updateSeller' : IDL.Func([IDL.Text, SellerAccount], [], []),
     'updateSiteContent' : IDL.Func([SiteContent], [], []),
   });
 };

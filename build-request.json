@@ -1,161 +1,40 @@
 {
   "kind": "build_request",
-  "title": "G&S MEDICAL Store Website with Admin Dashboard, Seller Management & AI Assistant",
-  "projectName": "G&S Medical",
+  "title": "Hide admin login shortcut from public website",
+  "projectName": "G&S MEDICAL",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Create the backend data models and actor with the following entities: (1) Medicines — id, name, category, description, price, stock, imageUrl, isAvailable; (2) Sellers — id, name, email, phone, whatsapp, address, licenseNumber, status (active/inactive/pending), joinedAt; (3) SiteContent — key/value store for editable website sections (hero text, about text, announcements, etc.); (4) AdminCredentials — hardcoded check for email 'gauravsaswade2009@gmail.com' and password 'p1love2g' returning a session token; (5) ChatMessages — id, customerQuery, botResponse, timestamp. Expose CRUD endpoints for all entities and an admin login function.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "admin dashboard admin can add medicine's, can edit website and can also manage seller's",
-          "for admin dashboard login this e-mail (gauravsaswade2009@gmail.com) and password (p1love2g)"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Admin can log in with gauravsaswade2009@gmail.com / p1love2g and receive a valid session token",
-        "Medicines can be created, read, updated, and deleted via backend functions",
-        "Sellers can be created, read, updated, and their status toggled via backend functions",
-        "SiteContent key/value pairs can be read and updated by admin",
-        "Chat messages can be stored and retrieved"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Build a professional, animated public-facing homepage for G&S MEDICAL with the following sections: (1) Hero — full-width banner with the G&S Medical logo, store name 'G&S MEDICAL', tagline about trusted healthcare, and a CTA button; (2) About Us — warm, positive description of the store emphasizing quality, trust, reliability, and community health; (3) Founder & Co-Founder profiles — cards for CEO GAURAV SASVADE and Co-Founder & Director SHUSHANT WAGHMARE with flattering professional bios, titles, phone numbers, and WhatsApp links; (4) Medicines/Products section — dynamically populated from backend data; (5) Seller Directory — list of active seller profiles; (6) Contact & Customer Care section with phone (+91 9766343454), WhatsApp (+91 9766343454), CEO phone (+91 9270556455), CEO WhatsApp (+91 9270556455), Co-Founder phone (+91 9156896495), Co-Founder WhatsApp (+91 9156896495), and store email gauravsaswade@gsgroupswebstore.in; (7) Footer with store name, tagline, and key links. Use smooth scroll animations, fade-ins, and entrance transitions throughout.",
+      "id": "REQ-19",
+      "text": "In the public-facing website (Navigation.tsx and any other publicly visible components such as the homepage footer or any navigation links), remove or hide any visible shortcut, link, or button that directs regular visitors to the admin login page ('/admin'). The '/admin' route itself must remain functional and accessible by direct URL, but no clickable shortcut to it should be visible to public users.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2"
+          "msg-7"
         ],
         "quotes": [
-          "design my website like professional designer and make it animative and attractive",
-          "say something good about my store and website in website",
-          "write some good thing's about co-founder & ceo"
+          "Hide admin login in shortcut from website"
         ]
       },
       "acceptanceCriteria": [
-        "Homepage displays G&S MEDICAL logo prominently with store name",
-        "Positive, professional bios for GAURAV SASVADE and SHUSHANT WAGHMARE are visible",
-        "All phone and WhatsApp numbers are correctly linked and clickable",
-        "Medicines and sellers sections load data from backend",
-        "Scroll animations and entrance transitions are present throughout",
-        "Contact section shows all specified numbers and email"
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Implement an Admin Dashboard accessible via a '/admin' route, protected by a login screen accepting email 'gauravsaswade2009@gmail.com' and password 'p1love2g'. The dashboard must include: (1) Medicine Manager — add, edit, delete medicines with fields for name, category, description, price, stock, image URL, availability toggle; (2) Seller Manager — view all seller profiles, add new sellers, edit seller details, toggle status (active/inactive/pending), and remove sellers; (3) Website Content Editor — edit key website sections (hero headline, about text, announcements) stored in SiteContent; (4) Dashboard overview — counts of total medicines, active sellers, pending sellers; (5) Logout button. The dashboard must be fully functional from any device/browser (no local-only restrictions).",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "admin dashboard admin can add medicine's, can edit website and can also manage seller's",
-          "make website like that admin can access admin dashboard from anywhere"
-        ]
-      },
-      "acceptanceCriteria": [
-        "'/admin' route shows login form; incorrect credentials show an error",
-        "Correct credentials grant access to the full dashboard",
-        "Admin can add, edit, and delete medicines; changes reflect on the public site",
-        "Admin can add, edit, remove, and toggle status of sellers",
-        "Admin can edit website content sections and save changes",
-        "Dashboard overview shows live counts",
-        "Logout clears session and redirects to login"
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Create seller profile pages on the public website. Each seller has a profile card visible on the Sellers section of the homepage and a dedicated seller detail page (e.g., '/sellers/:id'). Seller profiles display name, contact info, address, license number, and status badge. Only sellers with 'active' status are shown publicly. Admin can manage all sellers regardless of status from the dashboard.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "make seller profile and I can manage seller from admin dashboard"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Active sellers appear on the homepage Sellers section",
-        "Clicking a seller card navigates to a detailed seller profile page",
-        "Inactive or pending sellers are hidden from public view",
-        "Admin dashboard shows all sellers including inactive/pending"
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Implement a floating AI Assistant chatbot widget on all public pages. The widget opens as a chat bubble in the bottom-right corner. It responds to common customer queries about medicines, store hours, ordering, and contact information using a rule-based response engine (no external AI API). It should handle FAQs such as: how to order, store location/contact, available medicines, seller registration, and escalate to customer care (+91 9766343454) for unanswered queries. Chat history is preserved during the session.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "make one ai assistant for any queries for customer",
-          "in customer care add this number (+91 9766343454)"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A floating chat bubble is visible on all public pages",
-        "Opening the widget shows a welcome message from G&S MEDICAL Assistant",
-        "The bot answers common FAQs about medicines, ordering, and contact",
-        "Unanswered queries prompt the user to call/WhatsApp +91 9766343454",
-        "Chat history is maintained while the page is open"
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Apply a professional medical-grade visual theme across the entire website: clean white and deep emerald green primary palette with gold accent highlights, medical cross motifs, modern sans-serif typography, card-based layouts with subtle shadows, smooth hover transitions, and a trustworthy, authoritative aesthetic. Animate section entrances with fade-up and slide-in effects on scroll. Ensure the design is fully responsive for mobile, tablet, and desktop.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "design my website like professional designer and make it animative and attractive",
-          "make my website professional and attractive"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Consistent emerald green, white, and gold color palette throughout",
-        "Typography is clean, readable, and professional",
-        "All sections have scroll-triggered entrance animations",
-        "Layout is fully responsive on mobile, tablet, and desktop",
-        "Hover effects are present on buttons, cards, and links"
+        "No link, button, or text directing users to '/admin' or the admin login page is visible anywhere on the public-facing website (homepage, navigation bar, footer, etc.).",
+        "Navigating directly to '/admin' via the browser address bar still works and shows the admin login page.",
+        "The admin dashboard remains fully functional for authenticated admins.",
+        "No other navigation links or public content are affected by this change."
       ]
     }
   ],
   "constraints": [
-    "Admin credentials are hardcoded as gauravsaswade2009@gmail.com / p1love2g — do not implement external authentication",
-    "AI assistant must be rule-based only — no external AI API calls",
-    "All phone and WhatsApp numbers must be used exactly as provided",
-    "Store email must be gauravsaswade@gsgroupswebstore.in",
-    "Do not use blue or purple as primary colors",
-    "All immutable frontend paths must not be modified"
+    "Do not remove or disable the '/admin' route — only hide the visible shortcut/link from the public UI.",
+    "Do not modify any immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui."
   ],
   "nonGoals": [
-    "Payment processing or e-commerce checkout",
-    "Real-time chat between customers and sellers",
-    "Email sending or SMTP integration",
-    "External map or geolocation features",
-    "User account registration for customers",
-    "Social media API integrations"
+    "Adding authentication or access control to the /admin route itself.",
+    "Changing any admin dashboard functionality.",
+    "Modifying the backend."
   ],
   "imageRequirements": {
-    "required": [
-      "G&S MEDICAL store logo — circular emblem with a green medical cross, 'G&S' monogram in bold gold letters, clean white background, professional healthcare style (gs-medical-logo.dim_512x512.png)",
-      "Hero banner background — abstract medical theme with subtle green gradient, soft bokeh light effects, clean white overlay area, wide format (hero-banner.dim_1920x600.png)",
-      "CEO profile portrait placeholder — professional headshot silhouette illustration with suit, warm neutral tone, medical/business context (ceo-avatar.dim_400x400.png)",
-      "Co-founder profile portrait placeholder — professional headshot silhouette illustration with suit, warm neutral tone, business context (cofounder-avatar.dim_400x400.png)"
-    ],
+    "required": [],
     "edits": []
   }
 }

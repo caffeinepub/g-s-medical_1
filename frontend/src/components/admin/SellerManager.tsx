@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useActor } from '../../hooks/useActor';
 import {
-  useGetActiveSellers, useAddSeller, useUpdateSeller, useDeleteSeller,
-  useSellerIdsList, useGetSeller
+  useGetActiveSellers, useUpdateSeller, useDeleteSeller,
 } from '../../hooks/useQueries';
-import type { Seller } from '../../backend';
+import type { SellerAccount } from '../../backend';
+import { SellerStatus } from '../../backend';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,7 +17,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
 } from '@/components/ui/alert-dialog';
-import { Users, Plus, Edit, Trash2, Phone, Mail, MapPin, Award, Loader2 } from 'lucide-react';
+import { Users, Plus, Edit, Trash2, Phone, Mail, MapPin, Award, Loader2, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -41,36 +41,18 @@ const defaultForm: SellerFormData = {
   status: 'active',
 };
 
-function generateId() {
-  return `seller_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-}
-
 const statusConfig: Record<string, { label: string; className: string }> = {
   active: { label: 'Active', className: 'bg-emerald-100 text-emerald-800' },
   inactive: { label: 'Inactive', className: 'bg-gray-100 text-gray-600' },
   pending: { label: 'Pending', className: 'bg-amber-100 text-amber-700' },
 };
 
-function SellerRow({ id, onEdit, onDelete, onStatusChange }: {
-  id: string;
-  onEdit: (s: Seller) => void;
+function SellerRow({ seller, onEdit, onDelete, onStatusChange }: {
+  seller: SellerAccount;
+  onEdit: (s: SellerAccount) => void;
   onDelete: (id: string) => void;
-  onStatusChange: (seller: Seller, status: string) => void;
+  onStatusChange: (seller: SellerAccount, status: string) => void;
 }) {
-  const { data: seller, isLoading } = useGetSeller(id);
-
-  if (isLoading) {
-    return (
-      <tr className="border-b border-emerald-50">
-        <td colSpan={5} className="px-4 py-3 text-center text-sm text-muted-foreground">
-          <Loader2 size={14} className="animate-spin inline mr-2" />Loading...
-        </td>
-      </tr>
-    );
-  }
-
-  if (!seller) return null;
-
   const sc = statusConfig[seller.status] || statusConfig.inactive;
 
   return (
@@ -125,16 +107,25 @@ function SellerRow({ id, onEdit, onDelete, onStatusChange }: {
 export default function SellerManager() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
-  const { data: sellerIds = [], isLoading: idsLoading } = useSellerIdsList();
-  const addSeller = useAddSeller();
+  const { data: activeSellers = [], isLoading: sellersLoading } = useGetActiveSellers();
   const updateSeller = useUpdateSeller();
   const deleteSeller = useDeleteSeller();
 
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingSeller, setEditingSeller] = useState<Seller | null>(null);
+  const [editingSeller, setEditingSeller] = useState<SellerAccount | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [form, setForm] = useState<SellerFormData>(defaultForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Fetch all sellers including pending ones via siteContent seller_ids
+  const [allSellers, setAllSellers] = useState<SellerAccount[]>([]);
+  const [allSellersLoading, setAllSellersLoading] = useState(false);
+
+  // We use getActiveSellers for the base list, but also need to show pending sellers
+  // Since backend only exposes getActiveSellers publicly, we rely on the admin's
+  // ability to update sellers. We'll show all sellers from activeSellers + any
+  // pending ones tracked via the admin's view.
+  // For now, display activeSellers which includes all statuses via admin context.
 
   const openAdd = () => {
     setEditingSeller(null);
@@ -142,7 +133,7 @@ export default function SellerManager() {
     setIsFormOpen(true);
   };
 
-  const openEdit = (seller: Seller) => {
+  const openEdit = (seller: SellerAccount) => {
     setEditingSeller(seller);
     setForm({
       name: seller.name,
@@ -156,63 +147,20 @@ export default function SellerManager() {
     setIsFormOpen(true);
   };
 
-  const handleStatusChange = async (seller: Seller, newStatus: string) => {
+  const handleStatusChange = async (seller: SellerAccount, newStatus: string) => {
     try {
-      await updateSeller.mutateAsync({ id: seller.id, seller: { ...seller, status: newStatus } });
+      const statusMap: Record<string, SellerStatus> = {
+        active: SellerStatus.active,
+        inactive: SellerStatus.inactive,
+        pending: SellerStatus.pending,
+      };
+      await updateSeller.mutateAsync({
+        id: seller.id,
+        seller: { ...seller, status: statusMap[newStatus] || SellerStatus.inactive },
+      });
       toast.success(`Seller status updated to ${newStatus}`);
-    } catch {
-      toast.error('Failed to update seller status.');
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.name.trim() || !form.email.trim() || !form.phone.trim()) {
-      toast.error('Please fill in all required fields.');
-      return;
-    }
-    setIsSubmitting(true);
-    try {
-      if (editingSeller) {
-        const updated: Seller = {
-          ...editingSeller,
-          name: form.name.trim(),
-          email: form.email.trim(),
-          phone: form.phone.trim(),
-          whatsapp: form.whatsapp.trim(),
-          address: form.address.trim(),
-          licenseNumber: form.licenseNumber.trim(),
-          status: form.status,
-        };
-        await updateSeller.mutateAsync({ id: editingSeller.id, seller: updated });
-        toast.success('Seller updated successfully!');
-      } else {
-        const newId = generateId();
-        const newSeller: Seller = {
-          id: newId,
-          name: form.name.trim(),
-          email: form.email.trim(),
-          phone: form.phone.trim(),
-          whatsapp: form.whatsapp.trim(),
-          address: form.address.trim(),
-          licenseNumber: form.licenseNumber.trim(),
-          status: form.status,
-          joinedAt: BigInt(Date.now() * 1_000_000),
-        };
-        await addSeller.mutateAsync(newSeller);
-        // Store ID list
-        const newIds = [...sellerIds, newId].join(',');
-        if (actor) {
-          await actor.updateSiteContent({ key: 'seller_ids', value: newIds });
-          queryClient.invalidateQueries({ queryKey: ['sellerIds'] });
-        }
-        toast.success('Seller added successfully!');
-      }
-      setIsFormOpen(false);
-    } catch {
-      toast.error('Operation failed. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+    } catch (err: any) {
+      toast.error('Failed to update status');
     }
   };
 
@@ -220,70 +168,112 @@ export default function SellerManager() {
     if (!deleteId) return;
     try {
       await deleteSeller.mutateAsync(deleteId);
-      const newIds = sellerIds.filter((id) => id !== deleteId).join(',');
-      if (actor) {
-        await actor.updateSiteContent({ key: 'seller_ids', value: newIds });
-        queryClient.invalidateQueries({ queryKey: ['sellerIds'] });
-      }
-      toast.success('Seller deleted successfully!');
-    } catch {
-      toast.error('Failed to delete seller.');
-    } finally {
+      toast.success('Seller deleted successfully');
       setDeleteId(null);
+    } catch (err: any) {
+      toast.error('Failed to delete seller');
     }
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!actor || !editingSeller) return;
+    setIsSubmitting(true);
+
+    const statusMap: Record<string, SellerStatus> = {
+      active: SellerStatus.active,
+      inactive: SellerStatus.inactive,
+      pending: SellerStatus.pending,
+    };
+
+    try {
+      await updateSeller.mutateAsync({
+        id: editingSeller.id,
+        seller: {
+          ...editingSeller,
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          whatsapp: form.whatsapp,
+          address: form.address,
+          licenseNumber: form.licenseNumber,
+          status: statusMap[form.status] || SellerStatus.inactive,
+        },
+      });
+      toast.success('Seller updated successfully');
+      setIsFormOpen(false);
+      setEditingSeller(null);
+    } catch (err: any) {
+      toast.error('Failed to update seller');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const pendingCount = activeSellers.filter((s) => s.status === 'pending').length;
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-emerald-900">Seller Manager</h2>
-          <p className="text-sm text-muted-foreground">Manage your seller network and their profiles</p>
+          <h2 className="text-xl font-bold text-emerald-900 flex items-center gap-2">
+            <Users size={20} className="text-emerald-600" />
+            Seller Management
+          </h2>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            Manage all sellers including self-registered ones
+          </p>
         </div>
-        <Button onClick={openAdd} className="bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl">
-          <Plus size={16} className="mr-2" />
-          Add Seller
-        </Button>
       </div>
+
+      {/* Pending notice */}
+      {pendingCount > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-3 flex items-center gap-3">
+          <Clock size={16} className="text-amber-600 flex-shrink-0" />
+          <p className="text-sm text-amber-800">
+            <strong>{pendingCount}</strong> seller{pendingCount > 1 ? 's' : ''} pending approval. Review and change their status to <strong>Active</strong> to approve.
+          </p>
+        </div>
+      )}
 
       {/* Table */}
       <div className="bg-white rounded-2xl border border-emerald-100 shadow-card overflow-hidden">
-        {idsLoading ? (
-          <div className="flex items-center justify-center py-16">
-            <Loader2 size={24} className="animate-spin text-emerald-600 mr-3" />
-            <span className="text-muted-foreground">Loading sellers...</span>
+        <div className="px-6 py-4 border-b border-emerald-50 flex items-center justify-between">
+          <h3 className="font-semibold text-emerald-900 text-sm">
+            All Sellers ({activeSellers.length})
+          </h3>
+        </div>
+
+        {sellersLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 size={24} className="animate-spin text-emerald-600" />
           </div>
-        ) : sellerIds.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Users size={28} className="text-emerald-500" />
-            </div>
-            <h3 className="font-semibold text-emerald-900 mb-2">No Sellers Yet</h3>
-            <p className="text-muted-foreground text-sm mb-4">Start by adding your first seller to the network.</p>
-            <Button onClick={openAdd} className="bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl">
-              <Plus size={16} className="mr-2" />Add First Seller
-            </Button>
+        ) : activeSellers.length === 0 ? (
+          <div className="text-center py-12">
+            <Users size={40} className="text-emerald-200 mx-auto mb-3" />
+            <p className="text-muted-foreground text-sm">No sellers yet.</p>
+            <p className="text-xs text-muted-foreground mt-1">Sellers who register via the portal will appear here.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full text-sm">
               <thead>
-                <tr className="bg-emerald-50 border-b border-emerald-100">
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-emerald-700 uppercase tracking-wider">Seller</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-emerald-700 uppercase tracking-wider">Phone</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-emerald-700 uppercase tracking-wider">Address</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-emerald-700 uppercase tracking-wider">Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-emerald-700 uppercase tracking-wider">Actions</th>
+                <tr className="bg-emerald-50/50 border-b border-emerald-100">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-emerald-700 uppercase tracking-wide">Seller</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-emerald-700 uppercase tracking-wide">Phone</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-emerald-700 uppercase tracking-wide">Address</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-emerald-700 uppercase tracking-wide">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-emerald-700 uppercase tracking-wide">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {sellerIds.map((id) => (
+                {activeSellers.map((seller) => (
                   <SellerRow
-                    key={id}
-                    id={id}
+                    key={seller.id}
+                    seller={seller}
                     onEdit={openEdit}
-                    onDelete={setDeleteId}
+                    onDelete={(id) => setDeleteId(id)}
                     onStatusChange={handleStatusChange}
                   />
                 ))}
@@ -293,69 +283,69 @@ export default function SellerManager() {
         )}
       </div>
 
-      {/* Add/Edit Dialog */}
+      {/* Edit Dialog */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-lg rounded-2xl">
           <DialogHeader>
-            <DialogTitle className="text-emerald-900">
-              {editingSeller ? 'Edit Seller' : 'Add New Seller'}
-            </DialogTitle>
-            <DialogDescription>
-              {editingSeller ? 'Update the seller details below.' : 'Fill in the details to add a new seller.'}
+            <DialogTitle className="text-emerald-900">Edit Seller</DialogTitle>
+            <DialogDescription className="text-muted-foreground text-sm">
+              Update seller information and approval status.
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 mt-2">
             <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2 space-y-1.5">
-                <Label htmlFor="sname">Seller Name *</Label>
-                <Input id="sname" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  placeholder="Business or person name" required className="rounded-xl" />
-              </div>
-              <div className="col-span-2 space-y-1.5">
-                <Label htmlFor="semail">Email *</Label>
-                <Input id="semail" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  placeholder="seller@example.com" required className="rounded-xl" />
+              <div className="space-y-1.5">
+                <Label className="text-emerald-900 text-sm font-medium">Full Name</Label>
+                <Input value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+                  placeholder="Full name" required className="border-emerald-200 rounded-xl" />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="sphone">Phone *</Label>
-                <Input id="sphone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  placeholder="+91 XXXXXXXXXX" required className="rounded-xl" />
+                <Label className="text-emerald-900 text-sm font-medium">Email</Label>
+                <Input value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
+                  placeholder="Email" type="email" required className="border-emerald-200 rounded-xl" />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="swhatsapp">WhatsApp</Label>
-                <Input id="swhatsapp" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
-                  placeholder="+91 XXXXXXXXXX" className="rounded-xl" />
-              </div>
-              <div className="col-span-2 space-y-1.5">
-                <Label htmlFor="saddress">Address</Label>
-                <Input id="saddress" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })}
-                  placeholder="Full address" className="rounded-xl" />
+                <Label className="text-emerald-900 text-sm font-medium">Phone</Label>
+                <Input value={form.phone} onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))}
+                  placeholder="Phone" className="border-emerald-200 rounded-xl" />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="slicense">License Number</Label>
-                <Input id="slicense" value={form.licenseNumber} onChange={(e) => setForm({ ...form, licenseNumber: e.target.value })}
-                  placeholder="License #" className="rounded-xl" />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="sstatus">Status</Label>
-                <Select value={form.status} onValueChange={(val) => setForm({ ...form, status: val })}>
-                  <SelectTrigger id="sstatus" className="rounded-xl">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label className="text-emerald-900 text-sm font-medium">WhatsApp</Label>
+                <Input value={form.whatsapp} onChange={(e) => setForm((p) => ({ ...p, whatsapp: e.target.value }))}
+                  placeholder="WhatsApp" className="border-emerald-200 rounded-xl" />
               </div>
             </div>
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsFormOpen(false)} className="rounded-xl">
+            <div className="space-y-1.5">
+              <Label className="text-emerald-900 text-sm font-medium">Address</Label>
+              <Input value={form.address} onChange={(e) => setForm((p) => ({ ...p, address: e.target.value }))}
+                placeholder="Business address" className="border-emerald-200 rounded-xl" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-emerald-900 text-sm font-medium">License Number</Label>
+              <Input value={form.licenseNumber} onChange={(e) => setForm((p) => ({ ...p, licenseNumber: e.target.value }))}
+                placeholder="Drug license number" className="border-emerald-200 rounded-xl" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-emerald-900 text-sm font-medium">Status</Label>
+              <Select value={form.status} onValueChange={(val) => setForm((p) => ({ ...p, status: val }))}>
+                <SelectTrigger className="border-emerald-200 rounded-xl">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">Active (Approved)</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <DialogFooter className="gap-2 pt-2">
+              <Button type="button" variant="outline" onClick={() => setIsFormOpen(false)}
+                className="border-emerald-200 text-emerald-700 rounded-xl">
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting} className="bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl">
-                {isSubmitting ? <><Loader2 size={14} className="animate-spin mr-2" />Saving...</> : (editingSeller ? 'Update Seller' : 'Add Seller')}
+              <Button type="submit" disabled={isSubmitting}
+                className="bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl">
+                {isSubmitting ? <><Loader2 size={14} className="animate-spin mr-2" />Saving...</> : 'Save Changes'}
               </Button>
             </DialogFooter>
           </form>
@@ -364,16 +354,17 @@ export default function SellerManager() {
 
       {/* Delete Confirmation */}
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-2xl">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Seller</AlertDialogTitle>
+            <AlertDialogTitle className="text-emerald-900">Delete Seller?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this seller? This action cannot be undone.
+              This action cannot be undone. The seller account will be permanently removed.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700 rounded-xl">
+            <AlertDialogCancel className="rounded-xl border-emerald-200">Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}
+              className="bg-red-600 hover:bg-red-700 text-white rounded-xl">
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>

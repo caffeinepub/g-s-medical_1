@@ -1,13 +1,25 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { Medicine, Seller, SiteContent } from '../backend';
+import type { Medicine, SellerAccount, SiteContent, Customer, RegisterCustomerResult } from '../backend';
 
-// ─── Medicines ───────────────────────────────────────────────────────────────
+// ─── Sellers (public) ─────────────────────────────────────────────────────────
 
 export function useGetActiveSellers() {
   const { actor, isFetching } = useActor();
-  return useQuery<Seller[]>({
+  return useQuery<SellerAccount[]>({
     queryKey: ['activeSellers'],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getActiveSellers();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useGetAllSellers() {
+  const { actor, isFetching } = useActor();
+  return useQuery<SellerAccount[]>({
+    queryKey: ['allSellers'],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getActiveSellers();
@@ -18,12 +30,12 @@ export function useGetActiveSellers() {
 
 export function useGetSeller(id: string) {
   const { actor, isFetching } = useActor();
-  return useQuery<Seller | null>({
+  return useQuery<SellerAccount | null>({
     queryKey: ['seller', id],
     queryFn: async () => {
       if (!actor || !id) return null;
       try {
-        return await actor.getSeller(id);
+        return await actor.getSellerByToken(id);
       } catch {
         return null;
       }
@@ -32,30 +44,18 @@ export function useGetSeller(id: string) {
   });
 }
 
-export function useGetAllSellers() {
-  const { actor, isFetching } = useActor();
-  return useQuery<Seller[]>({
-    queryKey: ['allSellers'],
-    queryFn: async () => {
-      if (!actor) return [];
-      // Get active sellers and combine with all known sellers
-      return actor.getActiveSellers();
-    },
-    enabled: !!actor && !isFetching,
-  });
-}
-
 export function useAddSeller() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (seller: Seller) => {
+    mutationFn: async (seller: SellerAccount) => {
       if (!actor) throw new Error('Actor not ready');
-      await actor.addSeller(seller);
+      await actor.updateSeller(seller.id, seller);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['activeSellers'] });
       queryClient.invalidateQueries({ queryKey: ['allSellers'] });
+      queryClient.invalidateQueries({ queryKey: ['sellerIds'] });
     },
   });
 }
@@ -64,7 +64,7 @@ export function useUpdateSeller() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, seller }: { id: string; seller: Seller }) => {
+    mutationFn: async ({ id, seller }: { id: string; seller: SellerAccount }) => {
       if (!actor) throw new Error('Actor not ready');
       await actor.updateSeller(id, seller);
     },
@@ -72,6 +72,7 @@ export function useUpdateSeller() {
       queryClient.invalidateQueries({ queryKey: ['activeSellers'] });
       queryClient.invalidateQueries({ queryKey: ['allSellers'] });
       queryClient.invalidateQueries({ queryKey: ['seller'] });
+      queryClient.invalidateQueries({ queryKey: ['sellerIds'] });
     },
   });
 }
@@ -87,11 +88,140 @@ export function useDeleteSeller() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['activeSellers'] });
       queryClient.invalidateQueries({ queryKey: ['allSellers'] });
+      queryClient.invalidateQueries({ queryKey: ['sellerIds'] });
     },
   });
 }
 
-// ─── Medicines ───────────────────────────────────────────────────────────────
+// ─── Seller Auth ──────────────────────────────────────────────────────────────
+
+export function useRegisterSeller() {
+  const { actor } = useActor();
+  return useMutation({
+    mutationFn: async (data: {
+      name: string;
+      email: string;
+      password: string;
+      phone: string;
+      whatsapp: string;
+      address: string;
+      licenseNumber: string;
+    }) => {
+      if (!actor) throw new Error('Actor not ready');
+      const result = await actor.registerSeller(
+        data.name,
+        data.email,
+        data.password,
+        data.phone,
+        data.whatsapp,
+        data.address,
+        data.licenseNumber
+      );
+      return result;
+    },
+  });
+}
+
+export function useSellerLogin() {
+  const { actor } = useActor();
+  return useMutation({
+    mutationFn: async ({ email, password }: { email: string; password: string }) => {
+      if (!actor) throw new Error('Actor not ready');
+      const token = await actor.sellerLogin(email, password);
+      return token;
+    },
+  });
+}
+
+export function useLogoutSeller() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (token: string) => {
+      if (!actor) throw new Error('Actor not ready');
+      return actor.logoutSeller(token);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['sellerProfile'] });
+    },
+  });
+}
+
+export function useGetSellerByToken(token: string | null) {
+  const { actor, isFetching } = useActor();
+  return useQuery<SellerAccount | null>({
+    queryKey: ['sellerProfile', token],
+    queryFn: async () => {
+      if (!actor || !token) return null;
+      try {
+        return await actor.getSellerByToken(token);
+      } catch {
+        return null;
+      }
+    },
+    enabled: !!actor && !isFetching && !!token,
+  });
+}
+
+// ─── Customer Auth ────────────────────────────────────────────────────────────
+
+export function useRegisterCustomer() {
+  const { actor } = useActor();
+  return useMutation({
+    mutationFn: async (data: {
+      name: string;
+      email: string;
+      password: string;
+      phone: string;
+    }): Promise<RegisterCustomerResult> => {
+      if (!actor) throw new Error('Actor not ready');
+      return actor.registerCustomer(data.name, data.email, data.password, data.phone);
+    },
+  });
+}
+
+export function useCustomerLogin() {
+  const { actor } = useActor();
+  return useMutation({
+    mutationFn: async ({ email, password }: { email: string; password: string }) => {
+      if (!actor) throw new Error('Actor not ready');
+      const token = await actor.customerLogin(email, password);
+      return token;
+    },
+  });
+}
+
+export function useLogoutCustomer() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (token: string) => {
+      if (!actor) throw new Error('Actor not ready');
+      return actor.logoutCustomer(token);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['customerProfile'] });
+    },
+  });
+}
+
+export function useGetCustomerByToken(token: string | null) {
+  const { actor, isFetching } = useActor();
+  return useQuery<Customer | null>({
+    queryKey: ['customerProfile', token],
+    queryFn: async () => {
+      if (!actor || !token) return null;
+      try {
+        return await actor.getCustomerByToken(token);
+      } catch {
+        return null;
+      }
+    },
+    enabled: !!actor && !isFetching && !!token,
+  });
+}
+
+// ─── Medicines ────────────────────────────────────────────────────────────────
 
 export function useGetMedicine(id: string) {
   const { actor, isFetching } = useActor();
@@ -190,7 +320,7 @@ export function useAdminLogin() {
   return useMutation({
     mutationFn: async ({ email, password }: { email: string; password: string }) => {
       if (!actor) throw new Error('Actor not ready');
-      return actor.adminLogin(email, password);
+      return actor.isCallerAdmin();
     },
   });
 }
@@ -199,7 +329,6 @@ export function useAdminLogin() {
 
 export function useMedicinesList() {
   const { actor, isFetching } = useActor();
-  // Since backend doesn't have a getAllMedicines, we store IDs in siteContent
   return useQuery<string[]>({
     queryKey: ['medicineIds'],
     queryFn: async () => {

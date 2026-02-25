@@ -5,6 +5,11 @@ import HomePage from './pages/HomePage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import SellerDetailPage from './pages/SellerDetailPage';
+import SellerSignUpPage from './pages/SellerSignUpPage';
+import SellerLoginPage from './pages/SellerLoginPage';
+import SellerDashboard from './pages/SellerDashboard';
+import CustomerSignUpPage from './pages/CustomerSignUpPage';
+import CustomerLoginPage from './pages/CustomerLoginPage';
 import ChatWidget from './components/ChatWidget';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -65,11 +70,48 @@ const adminDashboardRoute = createRoute({
   ),
 });
 
+// Seller auth routes
+const sellerSignUpRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/seller/signup',
+  component: SellerSignUpPage,
+});
+
+const sellerLoginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/seller/login',
+  component: SellerLoginPage,
+});
+
+const sellerDashboardRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/seller/dashboard',
+  component: SellerDashboard,
+});
+
+// Customer auth routes
+const customerSignUpRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/customer/signup',
+  component: CustomerSignUpPage,
+});
+
+const customerLoginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/customer/login',
+  component: CustomerLoginPage,
+});
+
 const routeTree = rootRoute.addChildren([
   publicRoute.addChildren([homeRoute]),
   sellerDetailRoute,
   adminLoginRoute,
   adminDashboardRoute,
+  sellerSignUpRoute,
+  sellerLoginRoute,
+  sellerDashboardRoute,
+  customerSignUpRoute,
+  customerLoginRoute,
 ]);
 
 const router = createRouter({ routeTree });

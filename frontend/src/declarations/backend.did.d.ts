@@ -10,11 +10,23 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export type ApprovalStatus = { 'pending' : null } |
+  { 'approved' : null } |
+  { 'rejected' : null };
 export interface ChatMessage {
   'id' : string,
-  'timestamp' : bigint,
+  'timestamp' : Time,
   'botResponse' : string,
   'customerQuery' : string,
+}
+export interface Customer {
+  'id' : string,
+  'name' : string,
+  'joinedAt' : Time,
+  'email' : string,
+  'sessionToken' : [] | [string],
+  'passwordHash' : string,
+  'phone' : string,
 }
 export interface Medicine {
   'id' : string,
@@ -26,32 +38,75 @@ export interface Medicine {
   'category' : string,
   'price' : bigint,
 }
-export interface Seller {
+export type RegisterCustomerResult = { 'ok' : null } |
+  { 'emailAlreadyExists' : null } |
+  { 'internalError' : null };
+export type RegisterSellerResult = { 'ok' : null } |
+  { 'emailAlreadyExists' : null } |
+  { 'internalError' : null };
+export interface SellerAccount {
   'id' : string,
-  'status' : string,
+  'status' : SellerStatus,
   'name' : string,
-  'joinedAt' : bigint,
+  'joinedAt' : Time,
   'whatsapp' : string,
   'email' : string,
   'address' : string,
+  'sessionToken' : [] | [string],
   'licenseNumber' : string,
+  'passwordHash' : string,
   'phone' : string,
 }
+export type SellerStatus = { 'active' : null } |
+  { 'pending' : null } |
+  { 'inactive' : null };
 export interface SiteContent { 'key' : string, 'value' : string }
+export type Time = bigint;
+export interface UserApprovalInfo {
+  'status' : ApprovalStatus,
+  'principal' : Principal,
+}
+export interface UserProfile { 'name' : string, 'role' : string }
+export type UserRole = { 'admin' : null } |
+  { 'user' : null } |
+  { 'guest' : null };
 export interface _SERVICE {
+  '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'addChatMessage' : ActorMethod<[ChatMessage], undefined>,
   'addMedicine' : ActorMethod<[Medicine], undefined>,
-  'addSeller' : ActorMethod<[Seller], undefined>,
-  'adminLogin' : ActorMethod<[string, string], boolean>,
+  'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'assignRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'customerLogin' : ActorMethod<[string, string], [] | [string]>,
   'deleteMedicine' : ActorMethod<[string], undefined>,
   'deleteSeller' : ActorMethod<[string], undefined>,
-  'getActiveSellers' : ActorMethod<[], Array<Seller>>,
+  'getActiveSellers' : ActorMethod<[], Array<SellerAccount>>,
+  'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
+  'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getChatMessage' : ActorMethod<[string], ChatMessage>,
+  'getCustomerByToken' : ActorMethod<[string], [] | [Customer]>,
   'getMedicine' : ActorMethod<[string], Medicine>,
-  'getSeller' : ActorMethod<[string], Seller>,
+  'getSellerByToken' : ActorMethod<[string], [] | [SellerAccount]>,
   'getSiteContent' : ActorMethod<[string], SiteContent>,
+  'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'isCallerAdmin' : ActorMethod<[], boolean>,
+  'isCallerApproved' : ActorMethod<[], boolean>,
+  'listApprovals' : ActorMethod<[], Array<UserApprovalInfo>>,
+  'logoutCustomer' : ActorMethod<[string], boolean>,
+  'logoutSeller' : ActorMethod<[string], boolean>,
+  'registerCustomer' : ActorMethod<
+    [string, string, string, string],
+    RegisterCustomerResult
+  >,
+  'registerSeller' : ActorMethod<
+    [string, string, string, string, string, string, string],
+    RegisterSellerResult
+  >,
+  'requestApproval' : ActorMethod<[], undefined>,
+  'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'sellerLogin' : ActorMethod<[string, string], [] | [string]>,
+  'setApproval' : ActorMethod<[Principal, ApprovalStatus], undefined>,
   'updateMedicine' : ActorMethod<[string, Medicine], undefined>,
-  'updateSeller' : ActorMethod<[string, Seller], undefined>,
+  'updateSeller' : ActorMethod<[string, SellerAccount], undefined>,
   'updateSiteContent' : ActorMethod<[SiteContent], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;

@@ -2,106 +2,22 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-build-a-professional-animated-public-facing-homepage-for-g-s-medical-with-the-following-sections-1-hero-full-width-banner-with-the-g-s-medical-logo-store-name-g-s-medical-tagline-about-trusted-healthcare-and-a-cta-button-2-about-us-warm-positive-description-of-the-store-emphasizing-quality-trust-reliability-and-community-health-3-founder-co-founder-profiles-cards-for-ceo-gaurav-sasvade-and-co-founder-director-shushant-waghmare-with-flattering-professional-bios-titles-phone-numbers-and-whatsapp-links-4-medicines-products-section-dynamically-populated-from-backend-data-5-seller-directory-list-of-active-seller-profiles-6-contact-customer-care-section-with-phone-91-9766343454-whatsapp-91-9766343454-ceo-phone-91-9270556455-ceo-whatsapp-91-9270556455-co-founder-phone-91-9156896495-co-founder-whatsapp-91-9156896495-and-store-email-gauravsaswade-gsgroupswebstore-in-7-footer-with-store-name-tagline-and-key-links-use-smooth-scroll-animations-fade-ins-and-entrance-transitions-throughout",
-      "featureTitle": "Build a professional, animated public-facing homepage for G&S MEDICAL with the following sections: (1) Hero — full-width banner with the G&S Medical logo, store name 'G&S MEDICAL', tagline about trusted healthcare, and a CTA button; (2) About Us — warm, positive description of the store emphasizing quality, trust, reliability, and community health; (3) Founder & Co-Founder profiles — cards for CEO GAURAV SASVADE and Co-Founder & Director SHUSHANT WAGHMARE with flattering professional bios, titles, phone numbers, and WhatsApp links; (4) Medicines/Products section — dynamically populated from backend data; (5) Seller Directory — list of active seller profiles; (6) Contact & Customer Care section with phone (+91 9766343454), WhatsApp (+91 9766343454), CEO phone (+91 9270556455), CEO WhatsApp (+91 9270556455), Co-Founder phone (+91 9156896495), Co-Founder WhatsApp (+91 9156896495), and store email gauravsaswade@gsgroupswebstore.in; (7) Footer with store name, tagline, and key links. Use smooth scroll animations, fade-ins, and entrance transitions throughout.",
+      "featureId": "feature-in-the-public-facing-website-navigation-tsx-and-any-other-publicly-visible-components-such-as-the-homepage-footer-or-any-navigation-links-remove-or-hide-any-visible-shortcut-link-or-button-that-directs-regular-visitors-to-the-admin-login-page-admin-the-admin-route-itself-must-remain-functional-and-accessible-by-direct-url-but-no-clickable-shortcut-to-it-should-be-visible-to-public-users",
+      "featureTitle": "In the public-facing website (Navigation.tsx and any other publicly visible components such as the homepage footer or any navigation links), remove or hide any visible shortcut, link, or button that directs regular visitors to the admin login page ('/admin'). The '/admin' route itself must remain functional and accessible by direct URL, but no clickable shortcut to it should be visible to public users.",
       "files": [
-        "frontend/src/components/MedicineCard.tsx",
-        "frontend/src/components/Navigation.tsx",
-        "frontend/src/components/SellerCard.tsx",
-        "frontend/src/pages/HomePage.tsx"
+        "frontend/src/components/Navigation.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
         "shadcn-ui@1.0.0",
         "build-template-react@1.0.0",
         "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0",
+        "user-approval@3.0.0"
       ],
       "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-an-admin-dashboard-accessible-via-a-admin-route-protected-by-a-login-screen-accepting-email-gauravsaswade2009-gmail-com-and-password-p1love2g-the-dashboard-must-include-1-medicine-manager-add-edit-delete-medicines-with-fields-for-name-category-description-price-stock-image-url-availability-toggle-2-seller-manager-view-all-seller-profiles-add-new-sellers-edit-seller-details-toggle-status-active-inactive-pending-and-remove-sellers-3-website-content-editor-edit-key-website-sections-hero-headline-about-text-announcements-stored-in-sitecontent-4-dashboard-overview-counts-of-total-medicines-active-sellers-pending-sellers-5-logout-button-the-dashboard-must-be-fully-functional-from-any-device-browser-no-local-only-restrictions",
-      "featureTitle": "Implement an Admin Dashboard accessible via a '/admin' route, protected by a login screen accepting email 'gauravsaswade2009@gmail.com' and password 'p1love2g'. The dashboard must include: (1) Medicine Manager — add, edit, delete medicines with fields for name, category, description, price, stock, image URL, availability toggle; (2) Seller Manager — view all seller profiles, add new sellers, edit seller details, toggle status (active/inactive/pending), and remove sellers; (3) Website Content Editor — edit key website sections (hero headline, about text, announcements) stored in SiteContent; (4) Dashboard overview — counts of total medicines, active sellers, pending sellers; (5) Logout button. The dashboard must be fully functional from any device/browser (no local-only restrictions).",
-      "files": [
-        "frontend/src/components/ProtectedRoute.tsx",
-        "frontend/src/components/admin/MedicineManager.tsx",
-        "frontend/src/components/admin/SellerManager.tsx",
-        "frontend/src/components/admin/WebsiteContentEditor.tsx",
-        "frontend/src/hooks/useAuth.ts",
-        "frontend/src/pages/AdminDashboard.tsx",
-        "frontend/src/pages/AdminLoginPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-create-seller-profile-pages-on-the-public-website-each-seller-has-a-profile-card-visible-on-the-sellers-section-of-the-homepage-and-a-dedicated-seller-detail-page-e-g-sellers-id-seller-profiles-display-name-contact-info-address-license-number-and-status-badge-only-sellers-with-active-status-are-shown-publicly-admin-can-manage-all-sellers-regardless-of-status-from-the-dashboard",
-      "featureTitle": "Create seller profile pages on the public website. Each seller has a profile card visible on the Sellers section of the homepage and a dedicated seller detail page (e.g., '/sellers/:id'). Seller profiles display name, contact info, address, license number, and status badge. Only sellers with 'active' status are shown publicly. Admin can manage all sellers regardless of status from the dashboard.",
-      "files": [
-        "frontend/src/components/SellersSection.tsx",
-        "frontend/src/pages/SellerDetailPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-a-floating-ai-assistant-chatbot-widget-on-all-public-pages-the-widget-opens-as-a-chat-bubble-in-the-bottom-right-corner-it-responds-to-common-customer-queries-about-medicines-store-hours-ordering-and-contact-information-using-a-rule-based-response-engine-no-external-ai-api-it-should-handle-faqs-such-as-how-to-order-store-location-contact-available-medicines-seller-registration-and-escalate-to-customer-care-91-9766343454-for-unanswered-queries-chat-history-is-preserved-during-the-session",
-      "featureTitle": "Implement a floating AI Assistant chatbot widget on all public pages. The widget opens as a chat bubble in the bottom-right corner. It responds to common customer queries about medicines, store hours, ordering, and contact information using a rule-based response engine (no external AI API). It should handle FAQs such as: how to order, store location/contact, available medicines, seller registration, and escalate to customer care (+91 9766343454) for unanswered queries. Chat history is preserved during the session.",
-      "files": [
-        "frontend/src/components/ChatWidget.tsx",
-        "frontend/src/utils/chatbot.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-apply-a-professional-medical-grade-visual-theme-across-the-entire-website-clean-white-and-deep-emerald-green-primary-palette-with-gold-accent-highlights-medical-cross-motifs-modern-sans-serif-typography-card-based-layouts-with-subtle-shadows-smooth-hover-transitions-and-a-trustworthy-authoritative-aesthetic-animate-section-entrances-with-fade-up-and-slide-in-effects-on-scroll-ensure-the-design-is-fully-responsive-for-mobile-tablet-and-desktop",
-      "featureTitle": "Apply a professional medical-grade visual theme across the entire website: clean white and deep emerald green primary palette with gold accent highlights, medical cross motifs, modern sans-serif typography, card-based layouts with subtle shadows, smooth hover transitions, and a trustworthy, authoritative aesthetic. Animate section entrances with fade-up and slide-in effects on scroll. Ensure the design is fully responsive for mobile, tablet, and desktop.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/AnimatedSection.tsx",
-        "frontend/src/index.css",
-        "frontend/tailwind.config.js"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-6"
+        "REQ-19"
       ],
       "confidence": "high"
     }

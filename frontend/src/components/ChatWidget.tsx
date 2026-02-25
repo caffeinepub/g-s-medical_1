@@ -88,7 +88,7 @@ export default function ChatWidget() {
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
       {/* Chat window */}
       {isOpen && (
-        <div className="w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-emerald-100 overflow-hidden chat-open">
+        <div className="w-80 sm:w-96 bg-pink-50 rounded-2xl shadow-2xl border border-pink-200 overflow-hidden chat-open">
           {/* Header */}
           <div className="bg-gradient-to-r from-emerald-700 to-emerald-800 p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -112,7 +112,7 @@ export default function ChatWidget() {
           </div>
 
           {/* Messages */}
-          <div className="h-72 overflow-y-auto p-4 space-y-3 bg-emerald-50/30">
+          <div className="h-72 overflow-y-auto p-4 space-y-3 bg-pink-100/40">
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -129,7 +129,7 @@ export default function ChatWidget() {
                   className={`max-w-[75%] rounded-2xl px-3 py-2 text-xs leading-relaxed whitespace-pre-line ${
                     msg.sender === 'user'
                       ? 'bg-emerald-700 text-white rounded-tr-sm'
-                      : 'bg-white text-foreground shadow-xs border border-emerald-100 rounded-tl-sm'
+                      : 'bg-pink-50 text-foreground shadow-xs border border-pink-200 rounded-tl-sm'
                   }`}
                 >
                   {msg.text}
@@ -142,7 +142,7 @@ export default function ChatWidget() {
                 <div className="w-7 h-7 rounded-full bg-emerald-700 flex items-center justify-center flex-shrink-0">
                   <Bot size={14} className="text-white" />
                 </div>
-                <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-xs border border-emerald-100">
+                <div className="bg-pink-50 rounded-2xl rounded-tl-sm px-4 py-3 shadow-xs border border-pink-200">
                   <div className="flex gap-1">
                     <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                     <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -156,7 +156,7 @@ export default function ChatWidget() {
 
           {/* Quick questions */}
           {messages.length <= 1 && (
-            <div className="px-4 py-2 border-t border-emerald-100 bg-white">
+            <div className="px-4 py-2 border-t border-pink-200 bg-pink-50">
               <p className="text-xs text-muted-foreground mb-2">Quick questions:</p>
               <div className="flex flex-wrap gap-1.5">
                 {quickQuestions.map((q) => (
@@ -166,7 +166,7 @@ export default function ChatWidget() {
                       setInputValue(q);
                       setTimeout(() => sendMessage(), 50);
                     }}
-                    className="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full border border-emerald-200 transition-colors"
+                    className="text-xs bg-pink-100 hover:bg-pink-200 text-emerald-700 px-2.5 py-1 rounded-full border border-pink-300 transition-colors"
                   >
                     {q}
                   </button>
@@ -176,7 +176,7 @@ export default function ChatWidget() {
           )}
 
           {/* Input */}
-          <div className="p-3 border-t border-emerald-100 bg-white flex gap-2">
+          <div className="p-3 border-t border-pink-200 bg-pink-50 flex gap-2">
             <input
               ref={inputRef}
               type="text"
@@ -184,7 +184,7 @@ export default function ChatWidget() {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Type your message..."
-              className="flex-1 text-sm border border-emerald-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent bg-emerald-50/50"
+              className="flex-1 text-sm border border-pink-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent bg-pink-100/50"
             />
             <Button
               onClick={sendMessage}

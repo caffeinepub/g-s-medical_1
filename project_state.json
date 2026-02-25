@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
-  "summary": "Medical store website for G&S MEDICAL with admin dashboard, seller management, AI assistant, and contact/WhatsApp integration.",
+  "projectStateVersion": 13,
+  "summary": "Medical store website for G&S MEDICAL with admin dashboard, seller management, AI assistant, contact/WhatsApp integration, and seller/customer authentication (signup & login).",
   "architectural_notes": [
     "Admin login: email=gauravsaswade2009@gmail.com, password=p1love2g (hardcoded for demo)",
     "Store email: gauravsaswade@gsgroupswebstore.in | CEO: Gaurav Sasvade | Co-founder: Shushant Waghmare",
@@ -9,7 +9,6 @@
   ],
   "known_issues": [],
   "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- G&S MEDICAL store logo — circular emblem with a green medical cross, 'G&S' monogram in bold gold letters, clean white background, professional healthcare style (gs-medical-logo.dim_512x512.png)\n- Hero banner background — abstract medical theme with subtle green gradient, soft bokeh light effects, clean white overlay area, wide format (hero-banner.dim_1920x600.png)\n- CEO profile portrait placeholder — professional headshot silhouette illustration with suit, warm neutral tone, medical/business context (ceo-avatar.dim_400x400.png)\n- Co-founder profile portrait placeholder — professional headshot silhouette illustration with suit, warm neutral tone, business context (cofounder-avatar.dim_400x400.png)",
   "existing_features": [
     {
       "id": "feature-build-a-professional-animated-public-facing-homepage-for-g-s-medical-with-the-following-sections-1-hero-full-width-banner-with-the-g-s-medical-logo-store-name-g-s-medical-tagline-about-trusted-healthcare-and-a-cta-button-2-about-us-warm-positive-description-of-the-store-emphasizing-quality-trust-reliability-and-community-health-3-founder-co-founder-profiles-cards-for-ceo-gaurav-sasvade-and-co-founder-director-shushant-waghmare-with-flattering-professional-bios-titles-phone-numbers-and-whatsapp-links-4-medicines-products-section-dynamically-populated-from-backend-data-5-seller-directory-list-of-active-seller-profiles-6-contact-customer-care-section-with-phone-91-9766343454-whatsapp-91-9766343454-ceo-phone-91-9270556455-ceo-whatsapp-91-9270556455-co-founder-phone-91-9156896495-co-founder-whatsapp-91-9156896495-and-store-email-gauravsaswade-gsgroupswebstore-in-7-footer-with-store-name-tagline-and-key-links-use-smooth-scroll-animations-fade-ins-and-entrance-transitions-throughout",
@@ -48,6 +47,94 @@
       "title": "Apply a professional medical-grade visual theme across the entire website: clean white and deep emerald green primary palette with gold accent highlights, medical cross motifs, modern sans-serif typography, card-based layouts with subtle shadows, smooth hover transitions, and a trustworthy, authoritative aesthetic. Animate section entrances with fade-up and slide-in effects on scroll. Ensure the design is fully responsive for mobile, tablet, and desktop.",
       "reqIds": [
         "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-seller-sign-up-page-at-route-seller-signup-the-form-must-collect-full-name-email-password-confirm-password-phone-whatsapp-number-address-and-license-number-on-successful-submission-call-the-backend-registerseller-function-display-a-confirmation-message-that-the-account-is-pending-admin-approval-link-to-the-seller-login-page-style-consistently-with-the-existing-emerald-green-and-gold-medical-theme",
+      "title": "Create a Seller Sign Up page at route '/seller/signup'. The form must collect: Full Name, Email, Password, Confirm Password, Phone, WhatsApp Number, Address, and License Number. On successful submission, call the backend registerSeller function. Display a confirmation message that the account is pending admin approval. Link to the Seller Login page. Style consistently with the existing emerald green and gold medical theme.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-seller-login-page-at-route-seller-login-the-form-collects-email-and-password-calls-the-backend-sellerlogin-function-and-on-success-stores-the-session-token-and-redirects-the-seller-to-a-seller-dashboard-page-basic-profile-view-display-error-messages-for-invalid-credentials-link-to-the-seller-sign-up-page-style-consistently-with-the-existing-emerald-green-and-gold-medical-theme",
+      "title": "Create a Seller Login page at route '/seller/login'. The form collects Email and Password, calls the backend sellerLogin function, and on success stores the session token and redirects the seller to a Seller Dashboard page (basic profile view). Display error messages for invalid credentials. Link to the Seller Sign Up page. Style consistently with the existing emerald green and gold medical theme.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-basic-seller-dashboard-page-at-route-seller-dashboard-accessible-only-to-authenticated-sellers-redirect-to-seller-login-if-no-valid-session-token-display-the-seller-s-profile-information-name-email-phone-address-license-number-and-their-current-account-status-badge-pending-active-inactive-include-a-logout-button-that-clears-the-session-and-redirects-to-seller-login",
+      "title": "Create a basic Seller Dashboard page at route '/seller/dashboard', accessible only to authenticated sellers (redirect to '/seller/login' if no valid session token). Display the seller's profile information (name, email, phone, address, license number) and their current account status badge (pending/active/inactive). Include a Logout button that clears the session and redirects to '/seller/login'.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-customer-sign-up-page-at-route-customer-signup-the-form-must-collect-full-name-email-password-confirm-password-and-phone-on-successful-submission-call-the-backend-registercustomer-function-and-redirect-to-the-customer-login-page-with-a-success-message-style-consistently-with-the-existing-emerald-green-and-gold-medical-theme",
+      "title": "Create a Customer Sign Up page at route '/customer/signup'. The form must collect: Full Name, Email, Password, Confirm Password, and Phone. On successful submission, call the backend registerCustomer function and redirect to the Customer Login page with a success message. Style consistently with the existing emerald green and gold medical theme.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-customer-login-page-at-route-customer-login-the-form-collects-email-and-password-calls-the-backend-customerlogin-function-stores-the-session-token-on-success-and-redirects-to-the-homepage-display-error-messages-for-invalid-credentials-link-to-the-customer-sign-up-page-add-links-to-customer-login-and-sign-up-in-the-main-site-navigation-bar-style-consistently-with-the-existing-emerald-green-and-gold-medical-theme",
+      "title": "Create a Customer Login page at route '/customer/login'. The form collects Email and Password, calls the backend customerLogin function, stores the session token on success, and redirects to the homepage. Display error messages for invalid credentials. Link to the Customer Sign Up page. Add links to Customer Login and Sign Up in the main site Navigation bar. Style consistently with the existing emerald green and gold medical theme.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-admin-dashboard-s-seller-manager-section-to-display-sellers-registered-via-the-self-signup-flow-status-pending-active-or-inactive-admin-must-be-able-to-approve-a-pending-seller-change-status-to-active-deactivate-a-seller-and-remove-a-seller-account-add-a-count-of-pending-seller-approvals-to-the-admin-dashboard-overview-stat-cards",
+      "title": "Update the Admin Dashboard's Seller Manager section to display sellers registered via the self-signup flow (status 'pending', 'active', or 'inactive'). Admin must be able to approve a pending seller (change status to 'active'), deactivate a seller, and remove a seller account. Add a count of 'Pending Seller Approvals' to the Admin Dashboard overview stat cards.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-react-query-hooks-in-frontend-src-hooks-usequeries-ts-for-all-new-backend-functions-registerseller-sellerlogin-getsellerbytoken-logoutseller-registercustomer-customerlogin-getcustomerbytoken-logoutcustomer-add-a-usesellerauth-and-usecustomerauth-hook-analogous-to-useauth-ts-for-managing-seller-and-customer-session-tokens-in-localstorage-respectively",
+      "title": "Add React Query hooks in frontend/src/hooks/useQueries.ts for all new backend functions: registerSeller, sellerLogin, getSellerByToken, logoutSeller, registerCustomer, customerLogin, getCustomerByToken, logoutCustomer. Add a useSellerAuth and useCustomerAuth hook (analogous to useAuth.ts) for managing seller and customer session tokens in localStorage respectively.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-the-top-navigation-bar-navigation-tsx-change-the-g-s-portion-of-the-logo-brand-text-from-white-to-black-so-it-is-clearly-visible-against-the-header-background",
+      "title": "In the top navigation bar (Navigation.tsx), change the 'G&S' portion of the logo/brand text from white to black so it is clearly visible against the header background.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-frontend-src-components-navigation-tsx-ensure-the-g-s-portion-of-the-logo-brand-text-is-styled-with-a-black-color-e-g-text-black-or-000000-so-it-is-clearly-visible-against-the-header-background-the-s-medical-portion-may-retain-its-existing-styling",
+      "title": "In frontend/src/components/Navigation.tsx, ensure the 'G&S' portion of the logo/brand text is styled with a black color (e.g., text-black or #000000) so it is clearly visible against the header background. The '& S MEDICAL' portion may retain its existing styling.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-the-chatwidget-or-whatsapp-contact-popup-component-change-the-popup-modal-box-background-color-from-white-to-pink-e-g-bg-pink-100-or-bg-pink-200-for-the-container-with-matching-pink-tones-for-the-header-and-inner-sections-ensure-text-remains-legible-against-the-pink-background",
+      "title": "In the ChatWidget or WhatsApp contact popup component, change the popup/modal box background color from white to pink (e.g., bg-pink-100 or bg-pink-200 for the container, with matching pink tones for the header and inner sections). Ensure text remains legible against the pink background.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-the-public-facing-website-navigation-tsx-and-any-other-publicly-visible-components-such-as-the-homepage-footer-or-any-navigation-links-remove-or-hide-any-visible-shortcut-link-or-button-that-directs-regular-visitors-to-the-admin-login-page-admin-the-admin-route-itself-must-remain-functional-and-accessible-by-direct-url-but-no-clickable-shortcut-to-it-should-be-visible-to-public-users",
+      "title": "In the public-facing website (Navigation.tsx and any other publicly visible components such as the homepage footer or any navigation links), remove or hide any visible shortcut, link, or button that directs regular visitors to the admin login page ('/admin'). The '/admin' route itself must remain functional and accessible by direct URL, but no clickable shortcut to it should be visible to public users.",
+      "reqIds": [
+        "REQ-19"
       ],
       "version": 1
     }
@@ -95,6 +182,52 @@
       "reqIds": [
         "REQ-1"
       ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Seller signup & login pages — sellers can register to sell their products on the website, with admin able to manage registered sellers from the dashboard",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Customer signup & login pages — customers can create an account and log in to the website",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Extend the backend Motoko actor to support Seller account registration and authentication: add a SellerAccount type with fields (id, name, email, passwordHash, phone, whatsapp, address, licenseNumber, status: pending/active/inactive, joinedAt). Expose functions: registerSeller(name, email, password, phone, whatsapp, address, licenseNumber) → returns ok/err, sellerLogin(email, password) → returns session token or err, getSellerByToken(token) → returns seller profile, logoutSeller(token). New seller registrations default to 'pending' status and must await admin approval.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Extend the backend Motoko actor to support Customer account registration and authentication: add a Customer type with fields (id, name, email, passwordHash, phone, joinedAt). Expose functions: registerCustomer(name, email, password, phone) → returns ok/err, customerLogin(email, password) → returns session token or err, getCustomerByToken(token) → returns customer profile, logoutCustomer(token).",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Change 'G&S' text color in the top/header area from white to black",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Change the WhatsApp 'us' popup box color from white to pink",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Hide the admin login shortcut/link from the public-facing website so it is not visible to regular visitors",
+      "reqIds": [],
       "status": "pending"
     }
   ],
