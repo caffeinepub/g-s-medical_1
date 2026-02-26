@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-25T20:43:02.118Z",
+  "generatedAt": "2026-02-25T20:51:05.767Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -11,8 +11,8 @@
     "implemented": 1,
     "items": [
       {
-        "id": "REQ-21",
-        "summary": "In frontend/src/pages/HomePage.tsx, locate the CTA button element in the hero section identified by the XPath /html[1]/body[1]/div[1]/div[1]/main[1]/section[1]/div[3]/div[5]/a[1]/button[1] and change its background color from white to a white-pink tone (e.g., bg-pink-100 or #fff0f5). Ensure the button text remains legible against the new background.",
+        "id": "REQ-22",
+        "summary": "In frontend/src/pages/HomePage.tsx (or whichever component renders the founders section), locate the <img> element at XPath /html[1]/body[1]/div[1]/div[1]/main[1]/section[5]/div[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/img[1] and replace its src with the newly generated profile photo asset at 'frontend/public/assets/generated/founder-photo.dim_400x400.jpg'. Ensure the image renders with proper rounded/circular styling consistent with the existing founder card design.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/pages/HomePage.tsx"
@@ -28,6 +28,7 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/founder-photo.dim_400x400.jpg",
     "frontend/src/pages/HomePage.tsx",
     "project_state.json",
     "scratch/component-selection.json",

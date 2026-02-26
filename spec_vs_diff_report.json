@@ -1,11 +1,11 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-25T20:43:02.115Z",
-  "summary": "The diff shows that HomePage.tsx was modified to change the hero section CTA button ('WhatsApp Us') background color from white to a white-pink tone (bg-pink-100 border-pink-200 text-pink-800 hover:bg-pink-200), which directly satisfies REQ-21. The file summary confirms this change, and no other elements appear to have been modified outside the specified target.",
+  "generatedAt": "2026-02-25T20:51:05.764Z",
+  "summary": "The diff shows that frontend/src/pages/HomePage.tsx was modified to update the Founder & CEO (GAURAV SASVADE) profile photo src to '/assets/generated/founder-photo.dim_400x400.jpg', which directly addresses REQ-22. The file summary confirms this change. No other cards or sections appear to have been modified.",
   "missing_requirements": [],
   "hallucinated_features": [],
-  "confidence": 0.92,
+  "confidence": 0.9,
   "changed_files": [
     "frontend-file-summaries.txt",
     "frontend/src/pages/HomePage.tsx",

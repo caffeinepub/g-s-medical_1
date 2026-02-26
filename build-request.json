@@ -1,38 +1,40 @@
 {
   "kind": "build_request",
-  "title": "Change hero CTA button color to white-pink",
+  "title": "Replace founder/co-founder profile photo with uploaded image",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-21",
-      "text": "In frontend/src/pages/HomePage.tsx, locate the CTA button element in the hero section identified by the XPath /html[1]/body[1]/div[1]/div[1]/main[1]/section[1]/div[3]/div[5]/a[1]/button[1] and change its background color from white to a white-pink tone (e.g., bg-pink-100 or #fff0f5). Ensure the button text remains legible against the new background.",
+      "id": "REQ-22",
+      "text": "In frontend/src/pages/HomePage.tsx (or whichever component renders the founders section), locate the <img> element at XPath /html[1]/body[1]/div[1]/div[1]/main[1]/section[5]/div[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/img[1] and replace its src with the newly generated profile photo asset at 'frontend/public/assets/generated/founder-photo.dim_400x400.jpg'. Ensure the image renders with proper rounded/circular styling consistent with the existing founder card design.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-last"
         ],
         "quotes": [
-          "Change color white to whitepink"
+          "Put this photo her"
         ]
       },
       "acceptanceCriteria": [
-        "The CTA button in the hero section of HomePage.tsx has a white-pink background color (e.g., bg-pink-100, #fff0f5, or similar soft pinkish-white tone) instead of white.",
-        "Button text is clearly legible against the new white-pink background.",
-        "No other buttons or elements outside the specified XPath target are changed."
+        "The uploaded person's photo appears in the founder/co-founder profile card image slot identified by the given XPath.",
+        "The image is served from frontend/public/assets/generated/founder-photo.dim_400x400.jpg.",
+        "The image displays with the same shape and styling (e.g., rounded or circular) as the existing profile photo placeholder.",
+        "No other profile cards or page sections are affected."
       ]
     }
   ],
   "constraints": [
-    "Only the button element at XPath /html[1]/body[1]/div[1]/div[1]/main[1]/section[1]/div[3]/div[5]/a[1]/button[1] should be modified.",
-    "Do not alter any other elements, colors, or styles on the page."
+    "Only the specific <img> element at the provided XPath must be changed; no other images or layout elements should be modified."
   ],
   "nonGoals": [
-    "Changing any other white elements on the homepage or site-wide.",
-    "Modifying button text, size, shape, or any property other than background color.",
-    "Updating the backend."
+    "Changing any other section of the homepage.",
+    "Modifying backend data or schema.",
+    "Updating any other founder/co-founder card not referenced by the XPath."
   ],
   "imageRequirements": {
     "required": [],
-    "edits": []
+    "edits": [
+      "Crop and reframe to a professional square headshot with a clean, slightly softened background (IMG_20250724_183425_656.webp > founder-photo.dim_400x400.jpg)"
+    ]
   }
 }

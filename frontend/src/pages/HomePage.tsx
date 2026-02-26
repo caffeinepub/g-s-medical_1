@@ -298,7 +298,7 @@ function TeamSection() {
     {
       name: 'GAURAV SASVADE',
       title: 'Founder & CEO',
-      image: '/assets/generated/ceo-avatar.dim_400x400.png',
+      image: '/assets/generated/founder-photo.dim_400x400.jpg',
       phone: '+91 9270556455',
       whatsapp: '+91 9270556455',
       bio: `Mr. Gaurav Sasvade is the visionary Founder and Chief Executive Officer of G&S MEDICAL. With an unwavering passion for making quality healthcare accessible to every individual, he established G&S MEDICAL with a mission to bridge the gap between patients and genuine medicines.
@@ -363,6 +363,24 @@ Mr. Waghmare's dedication to building a robust and transparent medical distribut
                     <div>
                       <h3 className="font-display text-xl font-bold">{member.name}</h3>
                       <p className="text-white/80 text-sm">{member.title}</p>
+                      <div className="flex gap-2 mt-2">
+                        <a
+                          href={`tel:${member.phone}`}
+                          className="flex items-center gap-1 text-xs bg-white/20 hover:bg-white/30 px-2 py-1 rounded-full transition-colors"
+                        >
+                          <Phone size={10} />
+                          Call
+                        </a>
+                        <a
+                          href={`https://wa.me/${member.whatsapp.replace(/\D/g, '')}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 text-xs bg-white/20 hover:bg-white/30 px-2 py-1 rounded-full transition-colors"
+                        >
+                          <SiWhatsapp size={10} />
+                          WhatsApp
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -374,7 +392,7 @@ Mr. Waghmare's dedication to building a robust and transparent medical distribut
                     {member.achievements.map((achievement) => (
                       <span
                         key={achievement}
-                        className="flex items-center gap-1 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full text-xs font-medium border border-emerald-100"
+                        className="flex items-center gap-1 text-xs bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full border border-emerald-100"
                       >
                         <Star size={10} className="fill-current" />
                         {achievement}
@@ -383,26 +401,12 @@ Mr. Waghmare's dedication to building a robust and transparent medical distribut
                   </div>
 
                   {/* Bio */}
-                  <div className="text-sm text-muted-foreground leading-relaxed space-y-3 mb-6">
+                  <div className="space-y-3">
                     {member.bio.split('\n\n').map((paragraph, i) => (
-                      <p key={i}>{paragraph}</p>
+                      <p key={i} className="text-sm text-muted-foreground leading-relaxed">
+                        {paragraph}
+                      </p>
                     ))}
-                  </div>
-
-                  {/* Contact */}
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <a href={`tel:${member.phone}`} className="flex-1">
-                      <Button variant="outline" size="sm" className="w-full border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-full">
-                        <Phone size={14} className="mr-1.5" />
-                        {member.phone}
-                      </Button>
-                    </a>
-                    <a href={`https://wa.me/${member.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex-1">
-                      <Button variant="outline" size="sm" className="w-full border-green-200 text-green-700 hover:bg-green-50 rounded-full">
-                        <SiWhatsapp size={14} className="mr-1.5" />
-                        WhatsApp
-                      </Button>
-                    </a>
                   </div>
                 </div>
               </div>
@@ -414,45 +418,28 @@ Mr. Waghmare's dedication to building a robust and transparent medical distribut
   );
 }
 
-function SellersPageSection() {
-  return (
-    <section id="sellers" className="section-padding bg-gradient-to-b from-white to-emerald-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimatedSection animation="fade-up" className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-sm font-medium mb-4">
-            <Users size={14} />
-            Our Network
-          </div>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-emerald-900 mb-4">
-            Trusted Seller Partners
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            Connect with our verified and licensed medical sellers across India for genuine medicines and healthcare products.
-          </p>
-        </AnimatedSection>
-        <SellersSection />
-      </div>
-    </section>
-  );
-}
-
 function ContactSection() {
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    message: '',
+  });
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 3000);
-    setFormData({ name: '', email: '', phone: '', message: '' });
+    setFormData({ name: '', phone: '', email: '', message: '' });
   };
 
   return (
-    <section id="contact" className="section-padding bg-white">
+    <section id="contact" className="section-padding bg-gradient-to-b from-emerald-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedSection animation="fade-up" className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-sm font-medium mb-4">
-            <MessageCircle size={14} />
+            <Mail size={14} />
             Get In Touch
           </div>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-emerald-900 mb-4">
@@ -482,16 +469,16 @@ function ContactSection() {
                   link: 'https://wa.me/919766343454',
                 },
                 {
-                  icon: Mail,
-                  title: 'Email',
-                  lines: ['gauravsaswade2009@gmail.com'],
+                  icon: MapPin,
+                  title: 'Address',
+                  lines: ['G&S MEDICAL', 'Maharashtra, India'],
                   color: 'bg-blue-100 text-blue-700',
                 },
                 {
-                  icon: MapPin,
-                  title: 'Location',
-                  lines: ['India'],
-                  color: 'bg-red-100 text-red-700',
+                  icon: Clock,
+                  title: 'Business Hours',
+                  lines: ['Mon – Sat: 9:00 AM – 9:00 PM', 'Sun: 10:00 AM – 6:00 PM'],
+                  color: 'bg-gold-100 text-gold-700',
                 },
               ].map((item) => (
                 <div key={item.title} className="flex items-start gap-4">
@@ -517,39 +504,38 @@ function ContactSection() {
 
           {/* Contact Form */}
           <AnimatedSection animation="slide-right">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid sm:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-8 shadow-card border border-emerald-100 space-y-5">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-emerald-900 mb-1.5">Name</label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required
-                    className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
                     placeholder="Your name"
+                    required
+                    className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-emerald-900 mb-1.5">Email</label>
+                  <label className="block text-sm font-medium text-emerald-900 mb-1.5">Phone</label>
                   <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
-                    className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
-                    placeholder="your@email.com"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    placeholder="+91 XXXXX XXXXX"
+                    className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition-all"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-emerald-900 mb-1.5">Phone</label>
+                <label className="block text-sm font-medium text-emerald-900 mb-1.5">Email</label>
                 <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
-                  placeholder="+91 XXXXX XXXXX"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="your@email.com"
+                  className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition-all"
                 />
               </div>
               <div>
@@ -557,27 +543,27 @@ function ContactSection() {
                 <textarea
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  required
-                  rows={4}
-                  className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm resize-none"
                   placeholder="How can we help you?"
+                  rows={4}
+                  required
+                  className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition-all resize-none"
                 />
               </div>
               <Button
                 type="submit"
-                className="w-full btn-gold rounded-xl py-3"
+                className="w-full btn-emerald rounded-xl py-3"
                 disabled={submitted}
               >
                 {submitted ? (
-                  <>
-                    <CheckCircle size={16} className="mr-2" />
+                  <span className="flex items-center gap-2">
+                    <CheckCircle size={16} />
                     Message Sent!
-                  </>
+                  </span>
                 ) : (
-                  <>
-                    <MessageCircle size={16} className="mr-2" />
+                  <span className="flex items-center gap-2">
+                    <Mail size={16} />
                     Send Message
-                  </>
+                  </span>
                 )}
               </Button>
             </form>
@@ -589,6 +575,9 @@ function ContactSection() {
 }
 
 function Footer() {
+  const currentYear = new Date().getFullYear();
+  const appId = encodeURIComponent(typeof window !== 'undefined' ? window.location.hostname : 'gs-medical');
+
   return (
     <footer className="bg-emerald-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -619,12 +608,12 @@ function Footer() {
             <ul className="space-y-2">
               {['Home', 'About', 'Medicines', 'Sellers', 'Team', 'Contact'].map((link) => (
                 <li key={link}>
-                  <a
-                    href={`#${link.toLowerCase()}`}
+                  <button
+                    onClick={() => document.getElementById(link.toLowerCase())?.scrollIntoView({ behavior: 'smooth' })}
                     className="text-emerald-300 hover:text-white text-sm transition-colors"
                   >
                     {link}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -645,19 +634,19 @@ function Footer() {
                 </a>
               </div>
               <div className="flex items-center gap-2">
-                <Mail size={14} />
-                <span>gauravsaswade2009@gmail.com</span>
+                <MapPin size={14} />
+                <span>Maharashtra, India</span>
               </div>
             </div>
           </div>
         </div>
 
         <div className="border-t border-emerald-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-emerald-400">
-          <p>© {new Date().getFullYear()} G&S MEDICAL. All rights reserved.</p>
+          <p>© {currentYear} G&S MEDICAL. All rights reserved.</p>
           <p className="flex items-center gap-1">
-            Built with <Heart size={14} className="text-red-400 fill-current" /> using{' '}
+            Built with <Heart size={14} className="text-pink-400 fill-pink-400" /> using{' '}
             <a
-              href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(typeof window !== 'undefined' ? window.location.hostname : 'unknown-app')}`}
+              href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${appId}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-gold-300 hover:text-gold-200 transition-colors"
@@ -673,17 +662,14 @@ function Footer() {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen">
-      <Navigation />
-      <main>
-        <HeroSection />
-        <AboutSection />
-        <MedicinesSection />
-        <SellersPageSection />
-        <TeamSection />
-        <ContactSection />
-      </main>
+    <main>
+      <HeroSection />
+      <AboutSection />
+      <MedicinesSection />
+      <SellersSection />
+      <TeamSection />
+      <ContactSection />
       <Footer />
-    </div>
+    </main>
   );
 }
